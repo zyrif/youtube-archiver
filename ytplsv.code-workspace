@@ -4,5 +4,11 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"eslint.validate": [
+			"javascript",
+			"javascriptreact",
+			"vue"
+		]
+	}
 }
