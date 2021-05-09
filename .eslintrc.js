@@ -7,10 +7,14 @@ module.exports = {
     'plugin:vue/essential',
     'eslint:recommended'
   ],
+  'plugins': [
+    'vuetify'
+  ],
   parserOptions: {
     parser: 'babel-eslint'
   },
   rules: {
+    'vuetify/no-deprecated-classes': 'warn',
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off'
   }
