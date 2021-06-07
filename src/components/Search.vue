@@ -104,7 +104,7 @@ export default {
     },
     autocompleteText: {
       hidden: "",
-      visible: "https://www.youtube.com/playlist?list=",
+      visible: "",
     },
 
     playlistInfo: {
@@ -128,8 +128,31 @@ export default {
       this.playlistUrl.listID = values.listID;
     },
     setAutocompleteHint: function (value) {
-      this.autocompleteText.hidden = value;
-      this.autocompleteText.visible = "https://www.youtube.com/playlist?list=".replace(value, "");
+      let keywords = [
+        "http://", "https://",
+        "www.", "m.",
+        "youtube.com",
+        "/playlist?list=",
+      ]
+      
+      let ogValue = value
+      keywords.forEach(element => {
+        value = value.replace(element, "");
+      });
+
+      if (value.length > 0) {
+        for (let i = 0; i < keywords.length; ++i) {
+          let element = keywords[i];
+          if (value.length <= element.length && element.match(value) !== null) {
+            this.autocompleteText.hidden = ogValue;
+            this.autocompleteText.visible = element.replace(value, "");
+            break;
+          }
+          this.autocompleteText.hidden = this.autocompleteText.visible = "";
+        }
+      } else {
+        this.autocompleteText.hidden = this.autocompleteText.visible = "";
+      }
     }
   },
   watch: {
