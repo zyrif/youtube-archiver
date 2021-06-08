@@ -117,6 +117,66 @@ export default {
         "Misconceptions about science are common. Sometimes these alternative ideas make a lot of sense, which is why it's so hard to change our ideas about the natural world.",
     },
   }),
+  computed: {
+    keywords: function () {
+      return [
+        {
+          key: "http",
+          value: "http://",
+          positions: this.getHintPositions({
+            initialPosition: 1,
+            value: "http://",
+            hintsBefore: [],
+          }),
+        },
+        {
+          key: "https",
+          value: "https://",
+          positions: this.getHintPositions({
+            initialPosition: 1,
+            value: "https://",
+            hintsBefore: [],
+          }),
+        },
+        {
+          key: "www",
+          value: "www.",
+          positions: this.getHintPositions({
+            initialPosition: 1,
+            value: "www.",
+            hintsBefore: ["http://", "https://"],
+          }),
+        },
+        {
+          key: "m",
+          value: "m.",
+          positions: this.getHintPositions({
+            initialPosition: 1,
+            value: "m.",
+            hintsBefore: ["http://", "https://"],
+          }),
+        },
+        {
+          key: "youtube",
+          value: "youtube.com",
+          positions: this.getHintPositions({
+            initialPosition: 1,
+            value: "youtube.com",
+            hintsBefore: ["http://", "https://", "www.", "m."],
+          }),
+        },
+        {
+          key: "path",
+          value: "/playlist?list=",
+          positions: this.getHintPositions({
+            initialPosition: 11,
+            value: "/playlist?list=",
+            hintsBefore: ["http://", "https://", "www.", "m.", "youtube.com"],
+          }),
+        },
+      ];
+    },
+  },
   methods: {
     setPlaylistUrl: function (values) {
       if (!values.listID)
@@ -127,25 +187,68 @@ export default {
       this.playlistUrl.domain = values.domain ? values.domain : "youtube.com";
       this.playlistUrl.listID = values.listID;
     },
+    getHintPositions: function (obj) {
+      // this function is used to calculate where the hint will activate based on url field length
+      let positions = [...Array(obj.value.length).keys()].map(
+        (i) => i + obj.initialPosition
+      );
+
+      let lastHintOffset = 0;
+      for (let i = 0; i < obj.hintsBefore.length; ++i) {
+        // url can have either http or https, not both
+        // TODO: Make this NOT hardcoded
+        if (i > 0) {
+          if (
+            obj.hintsBefore[i] === "https://" &&
+            obj.hintsBefore[i - 1] === "http://"
+          ) {
+            lastHintOffset -= obj.hintsBefore[i - 1].length;
+          } else if (
+            obj.hintsBefore[i] === "m." &&
+            obj.hintsBefore[i - 1] === "www."
+          ) {
+            lastHintOffset -= obj.hintsBefore[i - 1].length;
+          }
+        }
+
+        let newPositions = [...Array(obj.value.length).keys()].map(
+          (j) =>
+            j + obj.initialPosition + obj.hintsBefore[i].length + lastHintOffset
+        );
+        // only push unique positions
+        newPositions.forEach((element) => {
+          if (!positions.includes(element)) positions.push(element);
+        });
+
+        lastHintOffset += obj.hintsBefore[i].length;
+      }
+
+      // BUG: positions for /playlist?list= are wrong
+      return positions;
+    },
     setAutocompleteHint: function (value) {
-      let keywords = [
-        "http://", "https://",
-        "www.", "m.",
-        "youtube.com",
-        "/playlist?list=",
-      ]
-      
-      let ogValue = value
-      keywords.forEach(element => {
-        value = value.replace(element, "");
+      let trimmedValue = value;
+      this.keywords.forEach((element) => {
+        trimmedValue = trimmedValue.replace(element.value, "");
       });
 
-      if (value.length > 0) {
-        for (let i = 0; i < keywords.length; ++i) {
-          let element = keywords[i];
-          if (value.length <= element.length && element.match(value) !== null) {
-            this.autocompleteText.hidden = ogValue;
-            this.autocompleteText.visible = element.replace(value, "");
+      if (trimmedValue.length > 0) {
+        for (let i = 0; i < this.keywords.length; ++i) {
+          let element = this.keywords[i];
+          if (
+            trimmedValue.length <= element.value.length &&
+            element.value.match(
+              new RegExp(
+                "^" + trimmedValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+              )
+            ) !== null &&
+            element.positions.includes(value.length)
+          ) {
+            this.autocompleteText.hidden = value;
+            this.autocompleteText.visible = element.value.replace(
+              trimmedValue,
+              ""
+            );
             break;
           }
           this.autocompleteText.hidden = this.autocompleteText.visible = "";
@@ -153,13 +256,14 @@ export default {
       } else {
         this.autocompleteText.hidden = this.autocompleteText.visible = "";
       }
-    }
+    },
   },
   watch: {
     "playlistUrl.raw": function (url) {
       this.setAutocompleteHint(url);
 
-      let re = /\b(?<protocol>[https]{4,5})?(?::\/\/)?\b(?<subdomain>www|m)?(?:.)?\b(?<domain>youtube\.com)?\b(?:\/playlist\?list=)?\b(?<playlistid>[-a-zA-Z0-9()_]{18,34})\b/;
+      let re =
+        /\b(?<protocol>[https]{4,5})?(?::\/\/)?\b(?<subdomain>www|m)?(?:.)?\b(?<domain>youtube\.com)?\b(?:\/playlist\?list=)?\b(?<playlistid>[-a-zA-Z0-9()_]{18,34})\b/;
       if (re.test(url)) {
         let matches = re.exec(url);
 
@@ -184,6 +288,5 @@ export default {
 
 .hint-hidden {
   color: rgba(255, 255, 255, 0);
-
 }
 </style>
