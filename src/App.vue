@@ -1,25 +1,42 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
+    <v-app-bar app elevation="0">
+      <div class="text-h4" @click="titleHandler">Tube Tracker</div>
+      <v-spacer />
+      <v-btn text @click.stop="showLoginDialog = true">
+        <v-icon left>fas fa-sign-in-alt</v-icon>
+        Log In
+      </v-btn>
     </v-app-bar>
 
     <v-main>
-      <router-view/>
+      <router-view />
+      <v-dialog v-model="showLoginDialog">
+        <login />
+      </v-dialog>
     </v-main>
   </v-app>
 </template>
 
 <script>
+import Login from "./components/Login.vue";
 
 export default {
-  name: 'App',
+  name: "App",
+
+  components: {
+    Login,
+  },
 
   data: () => ({
-    //
+    showLoginDialog: false,
   }),
+
+  methods: {
+    titleHandler: function() {
+      this.$router.push('/')
+    }
+  }
+
 };
 </script>
