@@ -1,94 +1,85 @@
 <template>
-  <v-container fill-height>
-    <v-row align="self-end" dense>
-      <v-col>
-        <v-card class="mx-auto" v-if="resultCard" outlined max-width="720px">
-          <v-card-title> Track A New Playlist </v-card-title>
-          <v-card-text>
-            <v-row class="ma-1" align="start">
-              <v-chip
-                class="ma-1"
-                v-if="playlistUrl.protocol"
-                :color="
-                  playlistUrl.protocol === 'https' ? 'success' : 'warning'
-                "
-                label
-              >
-                {{ playlistUrl.protocol }}
-              </v-chip>
-              <v-chip
-                class="ma-1"
-                v-if="playlistUrl.subdomain"
-                :color="playlistUrl.subdomain === 'www' ? 'primary' : 'error'"
-                label
-              >
-                {{ playlistUrl.subdomain }}
-              </v-chip>
-              <v-chip
-                class="ma-1"
-                v-if="playlistUrl.domain"
-                color="error"
-                label
-              >
-                {{ playlistUrl.domain }}
-              </v-chip>
-              <v-chip class="ma-1" v-if="playlistUrl.domain" label outlined>
-                /playlist?list=
-              </v-chip>
-              <v-chip class="ma-1" label>
-                {{ playlistUrl.listID }}
-              </v-chip>
-            </v-row>
-            <v-row class="mx-1" align="center" justify="start">
-              <p class="text-h4">
-                {{ playlistInfo.title }}
-              </p>
-            </v-row>
-            <v-row class="mx-1" align="center" justify="start">
-              <p class="text-subtitle-1 py-0">
-                {{ playlistInfo.channel }}
-              </p>
-            </v-row>
-            <v-row class="mx-1" align="center" justify="start">
-              <span class="text-subtitle-2">
-                {{ playlistInfo.numOfVideo }} Videos
-              </span>
-              <span class="text-subtitle-2">
-                {{ playlistInfo.numOfView }} Views
-              </span>
-            </v-row>
-            <v-row class="mx-1" align="end">
-              <p class="text-body-1 pt-2">
-                {{ playlistInfo.description }}
-              </p>
-            </v-row>
-          </v-card-text>
-          <v-card-actions>
-            <v-row class="ma-1" align="center" justify="end">
-              <v-btn text> track </v-btn>
-            </v-row>
-          </v-card-actions>
-        </v-card>
-        <v-card v-else class="mx-auto" outlined max-width="720px">
-          <v-card-text>
-            <div class="v-label" id="divAutocompleteHint">
-              <span class="hint-hidden">{{ autocompleteText.hidden }}</span
-              ><span>{{ autocompleteText.visible }}</span>
-            </div>
-            <v-text-field
-              v-model="playlistUrl.raw"
-              label="Youtube Playlist URL"
-            ></v-text-field>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-    <v-row align="self-start" dense>
-      <v-spacer></v-spacer>
-      <v-col style="text-align: center"> </v-col>
-      <v-spacer></v-spacer>
-    </v-row>
-  </v-container>
+  <v-col>
+    <v-card class="mx-auto" v-if="resultCard" outlined max-width="720px">
+      <v-card-title> Track A New Playlist </v-card-title>
+      <v-card-text>
+        <v-row class="ma-1" align="start">
+          <v-chip
+            class="ma-1"
+            v-if="playlistUrl.protocol"
+            :color="
+              playlistUrl.protocol === 'https' ? 'success' : 'warning'
+            "
+            label
+          >
+            {{ playlistUrl.protocol }}
+          </v-chip>
+          <v-chip
+            class="ma-1"
+            v-if="playlistUrl.subdomain"
+            :color="playlistUrl.subdomain === 'www' ? 'primary' : 'error'"
+            label
+          >
+            {{ playlistUrl.subdomain }}
+          </v-chip>
+          <v-chip
+            class="ma-1"
+            v-if="playlistUrl.domain"
+            color="error"
+            label
+          >
+            {{ playlistUrl.domain }}
+          </v-chip>
+          <v-chip class="ma-1" v-if="playlistUrl.domain" label outlined>
+            /playlist?list=
+          </v-chip>
+          <v-chip class="ma-1" label>
+            {{ playlistUrl.listID }}
+          </v-chip>
+        </v-row>
+        <v-row class="mx-1" align="center" justify="start">
+          <p class="text-h4">
+            {{ playlistInfo.title }}
+          </p>
+        </v-row>
+        <v-row class="mx-1" align="center" justify="start">
+          <p class="text-subtitle-1 py-0">
+            {{ playlistInfo.channel }}
+          </p>
+        </v-row>
+        <v-row class="mx-1" align="center" justify="start">
+          <span class="text-subtitle-2">
+            {{ playlistInfo.numOfVideo }} Videos
+          </span>
+          <span class="text-subtitle-2">
+            {{ playlistInfo.numOfView }} Views
+          </span>
+        </v-row>
+        <v-row class="mx-1" align="end">
+          <p class="text-body-1 pt-2">
+            {{ playlistInfo.description }}
+          </p>
+        </v-row>
+      </v-card-text>
+      <v-card-actions>
+        <v-row class="ma-1" align="center" justify="end">
+          <v-btn text @click="trackHandler"> track </v-btn>
+        </v-row>
+      </v-card-actions>
+    </v-card>
+    <v-card v-else class="mx-auto" outlined max-width="720px">
+      <v-card-text>
+        <div class="v-label" id="divAutocompleteHint">
+          <span class="hint-hidden">{{ autocompleteText.hidden }}</span
+          ><span>{{ autocompleteText.visible }}</span>
+        </div>
+        <v-text-field
+          v-model="playlistUrl.raw"
+          label="Youtube Playlist URL"
+        ></v-text-field>
+      </v-card-text>
+    </v-card>
+  </v-col>
 </template>
 
 <script>
@@ -178,6 +169,9 @@ export default {
     },
   },
   methods: {
+    trackHandler: function () {
+      this.$router.push('/playlists');
+    },
     setPlaylistUrl: function (values) {
       if (!values.listID)
         throw new TypeError("Playlist ID must be a valid value");
