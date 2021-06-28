@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Landing from '../views/Landing.vue'
+import Dashboard from '../views/Dashboard.vue'
 
 Vue.use(VueRouter)
 
@@ -10,6 +11,11 @@ const routes = [
     name: 'Landing',
     component: Landing
   },
+  {
+    path: '/playlists',
+    name: 'Dashboard',
+    component: Dashboard
+  }
   // {
   //   path: '/about',
   //   name: 'About',
