@@ -4,32 +4,38 @@
       <p class="text-h3 ma-2">Playlists:</p>
     </v-row>
     <v-row>
-      <v-card
+      <v-hover
         v-for="item in playlists"
         :key="item.lastChecked"
-        class="elevation-4 ma-2"
-        width="100%"
+        v-slot="{ hover }"
       >
-        <v-card-title>{{ item.title }}</v-card-title>
-        <v-card-text>
-          <v-row class="mx-1" align="center" justify="start">
-            <p class="text-subtitle-2">{{ item.channel }}</p>
-          </v-row>
-          <v-row class="mx-1" align="center" justify="start">
-            <p class="text-subtitle-2">
-              Available Videos: {{ item.numOfVideos }}
-            </p>
-          </v-row>
-          <v-row class="mx-1" align="center" justify="start">
-            <p class="text-subtitle-2">
-              Tracked Videos: {{ item.numOfVideosTracked }}
-            </p>
-          </v-row>
-          <v-row class="mx-1" align="end" justify="end">
-            <p class="text-subtitle-2">{{ item.lastChecked }}</p>
-          </v-row>
-        </v-card-text>
-      </v-card>
+        <v-card
+          v-ripple
+          class="elevation-4 ma-2"
+          :class="hover ? 'red' : 'white'"
+          width="100%"
+        >
+          <v-card-title>{{ item.title }}</v-card-title>
+          <v-card-text>
+            <v-row class="mx-1" align="center" justify="start">
+              <p class="text-subtitle-2">{{ item.channel }}</p>
+            </v-row>
+            <v-row class="mx-1" align="center" justify="start">
+              <p class="text-subtitle-2">
+                Available Videos: {{ item.numOfVideos }}
+              </p>
+            </v-row>
+            <v-row class="mx-1" align="center" justify="start">
+              <p class="text-subtitle-2">
+                Tracked Videos: {{ item.numOfVideosTracked }}
+              </p>
+            </v-row>
+            <v-row class="mx-1" align="end" justify="end">
+              <p class="text-subtitle-2">{{ item.lastChecked }}</p>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-hover>
     </v-row>
   </v-container>
 </template>
