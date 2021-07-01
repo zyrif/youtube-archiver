@@ -33,10 +33,9 @@ export default {
   }),
 
   methods: {
-    titleHandler: function() {
-      this.$router.push('/')
-    }
-  }
-
+    titleHandler: function () {
+      this.$router.push('/');
+    },
+  },
 };
 </script>
