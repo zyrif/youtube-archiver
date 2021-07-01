@@ -7,9 +7,7 @@
           <v-chip
             class="ma-1"
             v-if="playlistUrl.protocol"
-            :color="
-              playlistUrl.protocol === 'https' ? 'success' : 'warning'
-            "
+            :color="playlistUrl.protocol === 'https' ? 'success' : 'warning'"
             label
           >
             {{ playlistUrl.protocol }}
@@ -22,12 +20,7 @@
           >
             {{ playlistUrl.subdomain }}
           </v-chip>
-          <v-chip
-            class="ma-1"
-            v-if="playlistUrl.domain"
-            color="error"
-            label
-          >
+          <v-chip class="ma-1" v-if="playlistUrl.domain" color="error" label>
             {{ playlistUrl.domain }}
           </v-chip>
           <v-chip class="ma-1" v-if="playlistUrl.domain" label outlined>
