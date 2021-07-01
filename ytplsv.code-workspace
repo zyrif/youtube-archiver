@@ -9,6 +9,12 @@
 			"javascript",
 			"javascriptreact",
 			"vue"
-		]
+		],
+		"vetur.format.enable": true,
+		"vetur.format.defaultFormatterOptions": {
+			"prettier": {
+				"singleQuote": true,
+			}
+		}
 	}
 }
