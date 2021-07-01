@@ -11,8 +11,14 @@
 			"vue"
 		],
 		"vetur.format.enable": true,
+		// "vetur.format.defaultFormatter.html": "js-beautify-html",
 		"vetur.format.defaultFormatterOptions": {
+			"js-beautify-html": {
+				"wrap_line_length": 40,
+				"wrap_attributes": "aligned-multiple"
+			},
 			"prettier": {
+				"printWidth": 80,
 				"singleQuote": true,
 			}
 		}
