@@ -14,6 +14,7 @@
           class="elevation-4 ma-2"
           :class="hover ? 'red' : 'white'"
           width="100%"
+          @click="clickHandler(item.id)"
         >
           <v-card-title>{{ item.title }} </v-card-title>
           <v-card-text>
@@ -51,6 +52,7 @@ export default {
   data: () => ({
     playlists: [
       {
+        id: 'PLAB27A3C12C31E663',
         title: 'Inertia',
         channel: 'Veritasium',
         numOfVideos: 8,
@@ -58,6 +60,7 @@ export default {
         lastChecked: new Date('2021-06-21'),
       },
       {
+        id: 'PL772556F1EFC4D01C',
         title: 'Misconceptions',
         channel: 'Veritasium',
         numOfVideos: 33,
@@ -65,6 +68,7 @@ export default {
         lastChecked: new Date('2021-06-21'),
       },
       {
+        id: 'FLHnyfMqiRRG1u-2MsSQLbXA',
         title: 'Favourites',
         channel: 'Veritasium',
         numOfVideos: 26,
@@ -72,6 +76,7 @@ export default {
         lastChecked: new Date('2021-06-21'),
       },
       {
+        id: 'PL67A3EFF8267A8DF9',
         title: 'Radiation',
         channel: 'Veritasium',
         numOfVideos: 5,
@@ -79,6 +84,7 @@ export default {
         lastChecked: new Date('2021-06-21'),
       },
       {
+        id: 'PLAC555EC7D3D0F4AA',
         title: 'Science Experiments!',
         channel: 'Veritasium',
         numOfVideos: 19,
@@ -90,6 +96,11 @@ export default {
   computed: {
     numOfVideosDeleted: function () {
       return this.numOfVideosTracked - this.numOfVideos;
+    },
+  },
+  methods: {
+    clickHandler: function (id) {
+      this.$router.push(`/playlist/${id}`);
     },
   },
 };

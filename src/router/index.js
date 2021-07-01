@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Landing from '../views/Landing.vue'
 import Dashboard from '../views/Dashboard.vue'
+import Playlist from '../views/Playlist.vue'
 
 Vue.use(VueRouter)
 
@@ -15,6 +16,11 @@ const routes = [
     path: '/playlists',
     name: 'Dashboard',
     component: Dashboard
+  },
+  {
+    path: '/playlist/:id',
+    name: 'Playlist',
+    component: Playlist,
   }
   // {
   //   path: '/about',

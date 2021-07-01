@@ -1,0 +1,182 @@
+<template>
+  <v-container>
+    <v-row>
+      <p class="text-h3 ma-2">Playlist name placeholder</p>
+    </v-row>
+    <playlist-list :videos="videos" />
+  </v-container>
+</template>
+
+<script>
+import PlaylistList from '../components/PlaylistList.vue';
+export default {
+  components: { PlaylistList },
+  data: () => ({
+    videos: [
+      {
+        title: 'Levitating Barbecue! Electromagnetic Induction',
+        channel: 'Veritasium',
+        dateUploaded: 'Oct 9, 2012',
+        duration: '3:45',
+        views: '2294421',
+        likes: '35932',
+        dislikes: '280',
+        videoID: 'txmKr69jGBk',
+      },
+      {
+        title: 'Levitating Barbecue! Electromagnetic Induction',
+        channel: 'Veritasium',
+        dateUploaded: 'Oct 9, 2012',
+        duration: '3:45',
+        views: '2294421',
+        likes: '35932',
+        dislikes: '280',
+        videoID: 'txmKr69jGBk',
+      },
+      {
+        title: 'Levitating Barbecue! Electromagnetic Induction',
+        channel: 'Veritasium',
+        dateUploaded: 'Oct 9, 2012',
+        duration: '3:45',
+        views: '2294421',
+        likes: '35932',
+        dislikes: '280',
+        videoID: 'txmKr69jGBk',
+      },
+      {
+        title: 'Levitating Barbecue! Electromagnetic Induction',
+        channel: 'Veritasium',
+        dateUploaded: 'Oct 9, 2012',
+        duration: '3:45',
+        views: '2294421',
+        likes: '35932',
+        dislikes: '280',
+        videoID: 'txmKr69jGBk',
+      },
+      {
+        title: 'Levitating Barbecue! Electromagnetic Induction',
+        channel: 'Veritasium',
+        dateUploaded: 'Oct 9, 2012',
+        duration: '3:45',
+        views: '2294421',
+        likes: '35932',
+        dislikes: '280',
+        videoID: 'txmKr69jGBk',
+      },
+      {
+        title: 'Levitating Barbecue! Electromagnetic Induction',
+        channel: 'Veritasium',
+        dateUploaded: 'Oct 9, 2012',
+        duration: '3:45',
+        views: '2294421',
+        likes: '35932',
+        dislikes: '280',
+        videoID: 'txmKr69jGBk',
+      },
+      {
+        title: 'Levitating Barbecue! Electromagnetic Induction',
+        channel: 'Veritasium',
+        dateUploaded: 'Oct 9, 2012',
+        duration: '3:45',
+        views: '2294421',
+        likes: '35932',
+        dislikes: '280',
+        videoID: 'txmKr69jGBk',
+      },
+      {
+        title: 'Levitating Barbecue! Electromagnetic Induction',
+        channel: 'Veritasium',
+        dateUploaded: 'Oct 9, 2012',
+        duration: '3:45',
+        views: '2294421',
+        likes: '35932',
+        dislikes: '280',
+        videoID: 'txmKr69jGBk',
+      },
+      {
+        title: 'Levitating Barbecue! Electromagnetic Induction',
+        channel: 'Veritasium',
+        dateUploaded: 'Oct 9, 2012',
+        duration: '3:45',
+        views: '2294421',
+        likes: '35932',
+        dislikes: '280',
+        videoID: 'txmKr69jGBk',
+      },
+      {
+        title: 'Levitating Barbecue! Electromagnetic Induction',
+        channel: 'Veritasium',
+        dateUploaded: 'Oct 9, 2012',
+        duration: '3:45',
+        views: '2294421',
+        likes: '35932',
+        dislikes: '280',
+        videoID: 'txmKr69jGBk',
+      },
+      {
+        title: 'Levitating Barbecue! Electromagnetic Induction',
+        channel: 'Veritasium',
+        dateUploaded: 'Oct 9, 2012',
+        duration: '3:45',
+        views: '2294421',
+        likes: '35932',
+        dislikes: '280',
+        videoID: 'txmKr69jGBk',
+      },
+      {
+        title: 'Levitating Barbecue! Electromagnetic Induction',
+        channel: 'Veritasium',
+        dateUploaded: 'Oct 9, 2012',
+        duration: '3:45',
+        views: '2294421',
+        likes: '35932',
+        dislikes: '280',
+        videoID: 'txmKr69jGBk',
+      },
+      {
+        title: 'Levitating Barbecue! Electromagnetic Induction',
+        channel: 'Veritasium',
+        dateUploaded: 'Oct 9, 2012',
+        duration: '3:45',
+        views: '2294421',
+        likes: '35932',
+        dislikes: '280',
+        videoID: 'txmKr69jGBk',
+      },
+      {
+        title: 'Levitating Barbecue! Electromagnetic Induction',
+        channel: 'Veritasium',
+        dateUploaded: 'Oct 9, 2012',
+        duration: '3:45',
+        views: '2294421',
+        likes: '35932',
+        dislikes: '280',
+        videoID: 'txmKr69jGBk',
+      },
+      {
+        title: 'Levitating Barbecue! Electromagnetic Induction',
+        channel: 'Veritasium',
+        dateUploaded: 'Oct 9, 2012',
+        duration: '3:45',
+        views: '2294421',
+        likes: '35932',
+        dislikes: '280',
+        videoID: 'txmKr69jGBk',
+      },
+      {
+        title: 'Levitating Barbecue! Electromagnetic Induction',
+        channel: 'Veritasium',
+        dateUploaded: 'Oct 9, 2012',
+        duration: '3:45',
+        views: '2294421',
+        likes: '35932',
+        dislikes: '280',
+        videoID: 'txmKr69jGBk',
+      },
+    ],
+  }),
+};
+</script>
+
+<style>
+</style>
