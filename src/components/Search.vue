@@ -87,23 +87,23 @@ export default {
   data: () => ({
     resultCard: false,
     playlistUrl: {
-      raw: "",
-      protocol: "",
-      subdomain: "",
-      domain: "",
-      listID: "",
+      raw: '',
+      protocol: '',
+      subdomain: '',
+      domain: '',
+      listID: '',
     },
     autocompleteText: {
-      hidden: "",
-      visible: "",
+      hidden: '',
+      visible: '',
     },
 
     playlistInfo: {
-      title: "Misconceptions",
-      channel: "Veritasium",
+      title: 'Misconceptions',
+      channel: 'Veritasium',
       numOfVideo: 33,
       numOfView: 2614286,
-      dateLastUpdated: new Date("2021-06-01"),
+      dateLastUpdated: new Date('2021-06-01'),
       description:
         "Misconceptions about science are common. Sometimes these alternative ideas make a lot of sense, which is why it's so hard to change our ideas about the natural world.",
     },
@@ -112,57 +112,57 @@ export default {
     keywords: function () {
       return [
         {
-          key: "http",
-          value: "http://",
+          key: 'http',
+          value: 'http://',
           positions: this.getHintPositions({
             initialPosition: 1,
-            value: "http://",
+            value: 'http://',
             hintsBefore: [],
           }),
         },
         {
-          key: "https",
-          value: "https://",
+          key: 'https',
+          value: 'https://',
           positions: this.getHintPositions({
             initialPosition: 1,
-            value: "https://",
+            value: 'https://',
             hintsBefore: [],
           }),
         },
         {
-          key: "www",
-          value: "www.",
+          key: 'www',
+          value: 'www.',
           positions: this.getHintPositions({
             initialPosition: 1,
-            value: "www.",
-            hintsBefore: ["http://", "https://"],
+            value: 'www.',
+            hintsBefore: ['http://', 'https://'],
           }),
         },
         {
-          key: "m",
-          value: "m.",
+          key: 'm',
+          value: 'm.',
           positions: this.getHintPositions({
             initialPosition: 1,
-            value: "m.",
-            hintsBefore: ["http://", "https://"],
+            value: 'm.',
+            hintsBefore: ['http://', 'https://'],
           }),
         },
         {
-          key: "youtube",
-          value: "youtube.com",
+          key: 'youtube',
+          value: 'youtube.com',
           positions: this.getHintPositions({
             initialPosition: 1,
-            value: "youtube.com",
-            hintsBefore: ["http://", "https://", "www.", "m."],
+            value: 'youtube.com',
+            hintsBefore: ['http://', 'https://', 'www.', 'm.'],
           }),
         },
         {
-          key: "path",
-          value: "/playlist?list=",
+          key: 'path',
+          value: '/playlist?list=',
           positions: this.getHintPositions({
             initialPosition: 11,
-            value: "/playlist?list=",
-            hintsBefore: ["http://", "https://", "www.", "m.", "youtube.com"],
+            value: '/playlist?list=',
+            hintsBefore: ['http://', 'https://', 'www.', 'm.', 'youtube.com'],
           }),
         },
       ];
@@ -174,11 +174,11 @@ export default {
     },
     setPlaylistUrl: function (values) {
       if (!values.listID)
-        throw new TypeError("Playlist ID must be a valid value");
+        throw new TypeError('Playlist ID must be a valid value');
 
-      this.playlistUrl.protocol = values.protocol ? values.protocol : "https";
-      this.playlistUrl.subdomain = values.subdomain ? values.subdomain : "www";
-      this.playlistUrl.domain = values.domain ? values.domain : "youtube.com";
+      this.playlistUrl.protocol = values.protocol ? values.protocol : 'https';
+      this.playlistUrl.subdomain = values.subdomain ? values.subdomain : 'www';
+      this.playlistUrl.domain = values.domain ? values.domain : 'youtube.com';
       this.playlistUrl.listID = values.listID;
     },
     getHintPositions: function (obj) {
@@ -193,13 +193,13 @@ export default {
         // TODO: Make this NOT hardcoded
         if (i > 0) {
           if (
-            obj.hintsBefore[i] === "https://" &&
-            obj.hintsBefore[i - 1] === "http://"
+            obj.hintsBefore[i] === 'https://' &&
+            obj.hintsBefore[i - 1] === 'http://'
           ) {
             lastHintOffset -= obj.hintsBefore[i - 1].length;
           } else if (
-            obj.hintsBefore[i] === "m." &&
-            obj.hintsBefore[i - 1] === "www."
+            obj.hintsBefore[i] === 'm.' &&
+            obj.hintsBefore[i - 1] === 'www.'
           ) {
             lastHintOffset -= obj.hintsBefore[i - 1].length;
           }
@@ -223,7 +223,7 @@ export default {
     setAutocompleteHint: function (value) {
       let trimmedValue = value;
       this.keywords.forEach((element) => {
-        trimmedValue = trimmedValue.replace(element.value, "");
+        trimmedValue = trimmedValue.replace(element.value, '');
       });
 
       if (trimmedValue.length > 0) {
@@ -233,7 +233,7 @@ export default {
             trimmedValue.length <= element.value.length &&
             element.value.match(
               new RegExp(
-                "^" + trimmedValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+                '^' + trimmedValue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
               )
             ) !== null &&
             element.positions.includes(value.length)
@@ -241,19 +241,19 @@ export default {
             this.autocompleteText.hidden = value;
             this.autocompleteText.visible = element.value.replace(
               trimmedValue,
-              ""
+              ''
             );
             break;
           }
-          this.autocompleteText.hidden = this.autocompleteText.visible = "";
+          this.autocompleteText.hidden = this.autocompleteText.visible = '';
         }
       } else {
-        this.autocompleteText.hidden = this.autocompleteText.visible = "";
+        this.autocompleteText.hidden = this.autocompleteText.visible = '';
       }
     },
   },
   watch: {
-    "playlistUrl.raw": function (url) {
+    'playlistUrl.raw': function (url) {
       this.setAutocompleteHint(url);
 
       let re =

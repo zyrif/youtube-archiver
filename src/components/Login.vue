@@ -44,8 +44,8 @@
 </template>
 
 <script>
-import axios from "axios";
-import { mapGetters, mapMutations } from "vuex";
+import axios from 'axios';
+import { mapGetters, mapMutations } from 'vuex';
 
 export default {
   data() {
@@ -55,11 +55,11 @@ export default {
 
       btnEnabled: true,
       btnIsLoading: false,
-      btnColor: "blue",
-      btnMessage: "LOG IN",
+      btnColor: 'blue',
+      btnMessage: 'LOG IN',
 
       rules: {
-        required: (value) => !!value || "Value Required",
+        required: (value) => !!value || 'Value Required',
       },
     };
   },
@@ -69,13 +69,13 @@ export default {
         loading: this.btnIsLoading,
         disabled: !this.btnEnabled,
         color: this.btnColor,
-        outlined: this.btnColor === "blue",
+        outlined: this.btnColor === 'blue',
       };
       return options;
     },
 
     // map vuex getters
-    ...mapGetters(["authToken"]),
+    ...mapGetters(['authToken']),
   },
   methods: {
     // TODO: change name to executeLogin()
@@ -97,45 +97,45 @@ export default {
               this.setLoginState({ state: true });
               // console.log(this.$store.state.isLoggedIn)
 
-              this.$router.replace("/");
+              this.$router.replace('/');
             }
           })
           .catch((error) => {
-            if (!error.status && error.message === "Network Error") {
+            if (!error.status && error.message === 'Network Error') {
               this.btnIsLoading = false;
-              this.btnColor = "error";
-              this.btnMessage = "NETWORK OR API ERROR";
+              this.btnColor = 'error';
+              this.btnMessage = 'NETWORK OR API ERROR';
 
               setTimeout(() => {
-                this.btnColor = "blue";
-                this.btnMessage = "LOG IN";
+                this.btnColor = 'blue';
+                this.btnMessage = 'LOG IN';
               }, 5000);
             } else if (error.response.status === 400) {
               this.btnIsLoading = false;
-              this.btnColor = "error";
-              this.btnMessage = "INVALID CREDENTIALS";
+              this.btnColor = 'error';
+              this.btnMessage = 'INVALID CREDENTIALS';
 
               setTimeout(() => {
-                this.btnColor = "blue";
-                this.btnMessage = "LOG IN";
+                this.btnColor = 'blue';
+                this.btnMessage = 'LOG IN';
               }, 2500);
             } else if (
               error.response.status > 400 &&
               error.response.status <= 599
             ) {
               this.btnIsLoading = false;
-              this.btnColor = "error";
-              this.btnMessage = "API ERROR";
+              this.btnColor = 'error';
+              this.btnMessage = 'API ERROR';
 
               setTimeout(() => {
-                this.btnColor = "blue";
-                this.btnMessage = "LOG IN";
+                this.btnColor = 'blue';
+                this.btnMessage = 'LOG IN';
               }, 10000);
             } else {
               this.btnIsLoading = false;
               this.btnEnabled = false;
-              this.btnColor = "error";
-              this.btnMessage = "ERROR";
+              this.btnColor = 'error';
+              this.btnMessage = 'ERROR';
               //
               console.info(error.message);
             }
@@ -145,13 +145,13 @@ export default {
       }
     },
     clickLoginBtn(keyevent) {
-      if (keyevent.key === "Enter") {
+      if (keyevent.key === 'Enter') {
         this.$refs.loginBtn.$el.click();
       }
     },
 
     // map vuex Mutations
-    ...mapMutations(["setAuthToken"]),
+    ...mapMutations(['setAuthToken']),
   },
 };
 </script>
