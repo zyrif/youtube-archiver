@@ -155,3 +155,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.v-dialog > .v-card > .v-card__text {
+  padding: 20px 24px 12px;
+}
+</style>
