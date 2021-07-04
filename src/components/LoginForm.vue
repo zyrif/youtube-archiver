@@ -1,40 +1,53 @@
 <template>
   <v-card class="elevation-2" min-width="360px" max-width="460px">
-    <v-toolbar color="blue" dark flat>
-      <v-toolbar-title> Log In </v-toolbar-title>
+    <v-toolbar color="grey lighten-2" flat>
+      <v-toolbar-title>
+        {{ isSigningUp ? 'Sign Up' : 'Log In' }}
+      </v-toolbar-title>
     </v-toolbar>
     <v-card-text>
       <v-form>
         <v-text-field
-          v-model="username"
-          v-bind:rules="[rules.required]"
-          label="Username"
-          name="username"
-          type="text"
+          ref="email"
+          v-model="email"
+          :rules="[rules.required, rules.email]"
+          label="Email"
+          type="email"
           outlined
         />
 
         <v-text-field
+          ref="password"
           v-model="password"
-          v-bind:rules="[rules.required]"
+          :rules="[rules.required, rules.password]"
           label="Password"
-          name="password"
           type="password"
           outlined
           v-on:keydown="clickLoginBtn"
         />
+
+        <v-text-field
+          v-if="isSigningUp"
+          ref="password-confirm"
+          v-model="passwordConfirm"
+          :rules="[rules.required, rules.password]"
+          label="Confirm Password"
+          type="password"
+          outlined
+          v-on:keydown="clickSignupBtn"
+        ></v-text-field>
       </v-form>
     </v-card-text>
     <v-card-actions>
       <v-spacer />
       <v-btn
-        ref="loginBtn"
+        ref="actionBtn"
         class="mb-2 white--text"
         depressed
         block
         large
         v-bind="btnOptions"
-        v-on:click="processLogin"
+        v-on:click="doAuthAction"
       >
         {{ btnMessage }}
       </v-btn>
@@ -50,26 +63,56 @@ import { mapGetters, mapMutations } from 'vuex';
 export default {
   data() {
     return {
-      username: null,
-      password: null,
+      isSigningUp: false,
+
+      email: '',
+      password: '',
+      passwordConfirm: '',
 
       btnEnabled: true,
       btnIsLoading: false,
-      btnColor: 'blue',
-      btnMessage: 'LOG IN',
+      btnDefaultColor: 'red',
+      btnErrorMessage: '',
 
       rules: {
         required: (value) => !!value || 'Value Required',
+        email: (value) =>
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+            value
+          ) || 'Email must be valid',
+        password: (value) =>
+          (value.length >= 6 && value.length <= 32) ||
+          'Password must be at least 6 characters and at most 32 characters',
       },
     };
   },
   computed: {
+    btnColor: {
+      get() {
+        return this.btnErrorMessage === '' ? this.btnDefaultColor : 'error';
+      },
+    },
+    btnMessage: {
+      get() {
+        if (this.btnErrorMessage === '') {
+          return this.isSigningUp ? 'Sign Up' : 'Log In';
+        } else {
+          return this.btnErrorMessage;
+        }
+      },
+      set(value) {
+        this.btnErrorMessage = value;
+        setTimeout(() => {
+          this.btnErrorMessage = '';
+        }, 5000);
+      },
+    },
     btnOptions() {
       const options = {
         loading: this.btnIsLoading,
         disabled: !this.btnEnabled,
         color: this.btnColor,
-        outlined: this.btnColor === 'blue',
+        outlined: this.btnColor === this.btnDefaultColor,
       };
       return options;
     },
@@ -78,75 +121,68 @@ export default {
     ...mapGetters(['authToken']),
   },
   methods: {
-    // TODO: change name to executeLogin()
-    processLogin() {
-      // TODO: Remove this check, it is redundant
-      if (this.username && this.password) {
+    doAuthAction() {
+      if (
+        (!this.isSigningUp && this.email && this.password) ||
+        (this.isSigningUp &&
+          this.email &&
+          this.password &&
+          this.passwordConfirm)
+      ) {
         this.btnIsLoading = true;
 
         axios
           .post(this.apiAuthTokenUrl, {
-            username: this.username,
+            email: this.email,
             password: this.password,
           })
           .then((response) => {
             if (response.status === 200) {
               this.btnIsLoading = false;
-
               this.setAuthToken({ token: response.data.token });
               this.setLoginState({ state: true });
               // console.log(this.$store.state.isLoggedIn)
-
               this.$router.replace('/');
             }
           })
           .catch((error) => {
             if (!error.status && error.message === 'Network Error') {
               this.btnIsLoading = false;
-              this.btnColor = 'error';
               this.btnMessage = 'NETWORK OR API ERROR';
-
-              setTimeout(() => {
-                this.btnColor = 'blue';
-                this.btnMessage = 'LOG IN';
-              }, 5000);
-            } else if (error.response.status === 400) {
+            } else if (error.response && error.response.status === 400) {
               this.btnIsLoading = false;
-              this.btnColor = 'error';
               this.btnMessage = 'INVALID CREDENTIALS';
-
-              setTimeout(() => {
-                this.btnColor = 'blue';
-                this.btnMessage = 'LOG IN';
-              }, 2500);
             } else if (
+              error.response &&
               error.response.status > 400 &&
               error.response.status <= 599
             ) {
               this.btnIsLoading = false;
-              this.btnColor = 'error';
               this.btnMessage = 'API ERROR';
-
-              setTimeout(() => {
-                this.btnColor = 'blue';
-                this.btnMessage = 'LOG IN';
-              }, 10000);
             } else {
               this.btnIsLoading = false;
-              this.btnEnabled = false;
-              this.btnColor = 'error';
               this.btnMessage = 'ERROR';
-              //
+
+              // TODO: Remove debug info
               console.info(error.message);
             }
           });
       } else {
-        //
+        let fields = ['email', 'password'];
+        if (this.isSigningUp) fields.push('password-confirm');
+        fields.forEach(value => {
+          this.$refs[value].validate(true);
+        })
       }
     },
     clickLoginBtn(keyevent) {
-      if (keyevent.key === 'Enter') {
-        this.$refs.loginBtn.$el.click();
+      if (!this.isSigningUp && keyevent.key === 'Enter') {
+        this.$refs.actionBtn.$el.click();
+      }
+    },
+    clickSignupBtn(keyevent) {
+      if (this.isSigningUp && keyevent.key === 'Enter') {
+        this.$refs.actionBtn.$el.click();
       }
     },
 
