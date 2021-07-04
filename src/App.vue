@@ -14,7 +14,7 @@
 
     <v-main>
       <router-view />
-      <v-dialog v-model="showLoginDialog">
+      <v-dialog v-model="showLoginDialog" max-width="460px">
         <login />
       </v-dialog>
     </v-main>
