@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import Login from './components/LoginForm.vue';
+import Login from './components/LoginCard.vue';
 
 export default {
   name: 'App',
