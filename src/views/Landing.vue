@@ -1,6 +1,6 @@
 <template>
   <v-container fill-height>
-    <v-row align="self-center" dense>
+    <v-row align="center" dense>
       <v-col><search /></v-col>
     </v-row>
   </v-container>
