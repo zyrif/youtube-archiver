@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import Search from '@/components/Search.vue';
+import Search from '@/components/SearchCard.vue';
 
 export default {
   components: {
