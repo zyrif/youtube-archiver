@@ -266,7 +266,8 @@ export default {
 
 <style>
 #divAutocompleteHint {
-  transform: translateX(0px) translateY(40px);
+  transform: translateX(0px) translateY(27px);
+  min-height: 16px;
 }
 
 .hint-hidden {
