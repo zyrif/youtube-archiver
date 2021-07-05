@@ -1,12 +1,7 @@
 <template>
   <v-container fill-height>
-    <v-row align="self-end" dense>
-      <search> </search>
-    </v-row>
-    <v-row align="self-start" dense>
-      <v-spacer></v-spacer>
-      <v-col style="text-align: center"> </v-col>
-      <v-spacer></v-spacer>
+    <v-row align="self-center" dense>
+      <v-col><search /></v-col>
     </v-row>
   </v-container>
 </template>
