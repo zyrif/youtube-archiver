@@ -264,7 +264,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #divAutocompleteHint {
   transform: translateX(0px) translateY(27px);
   min-height: 16px;
@@ -272,5 +272,9 @@ export default {
 
 .hint-hidden {
   color: rgba(255, 255, 255, 0);
+}
+
+.v-text-field {
+  padding-top: 0;
 }
 </style>
