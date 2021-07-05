@@ -69,6 +69,7 @@
         label="Youtube Playlist URL"
         placeholder="Paste the Youtube Playlist/Channel URL you want to track here"
         hint="Ex. youtube.com/playlist?list=<Playlist ID>"
+        v-on:keydown.tab.prevent="doAutocomplete"
       ></v-text-field>
     </v-card-text>
   </v-card>
@@ -243,6 +244,11 @@ export default {
         this.autocompleteText.hidden = this.autocompleteText.visible = '';
       }
     },
+    doAutocomplete: function () {
+      if (this.autocompleteText.visible.length > 0) {
+        this.playlistUrl.raw += this.autocompleteText.visible
+      }
+    }
   },
   watch: {
     'playlistUrl.raw': function (url) {
