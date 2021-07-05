@@ -65,7 +65,10 @@
       </div>
       <v-text-field
         v-model="playlistUrl.raw"
+        color="red"
         label="Youtube Playlist URL"
+        placeholder="Paste the Youtube Playlist/Channel URL you want to track here"
+        hint="Ex. youtube.com/playlist?list=<Playlist ID>"
       ></v-text-field>
     </v-card-text>
   </v-card>
