@@ -272,6 +272,7 @@ export default {
 
 .hint-hidden {
   color: rgba(255, 255, 255, 0);
+  letter-spacing: 0;
 }
 
 .v-text-field {
