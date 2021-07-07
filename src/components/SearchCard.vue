@@ -246,9 +246,9 @@ export default {
     },
     doAutocomplete: function () {
       if (this.autocompleteText.visible.length > 0) {
-        this.playlistUrl.raw += this.autocompleteText.visible
+        this.playlistUrl.raw += this.autocompleteText.visible;
       }
-    }
+    },
   },
   watch: {
     'playlistUrl.raw': function (url) {
