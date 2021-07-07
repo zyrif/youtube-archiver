@@ -76,6 +76,7 @@
 </template>
 
 <script>
+import { debounce } from '../utils/helpers';
 export default {
   data: () => ({
     resultCard: false,
@@ -252,7 +253,7 @@ export default {
   },
   watch: {
     'playlistUrl.raw': function (url) {
-      this.setAutocompleteHint(url);
+      debounce(value => this.setAutocompleteHint(value), 100)(url);
 
       let re =
         /\b(?<protocol>[https]{4,5})?(?::\/\/)?\b(?<subdomain>www|m)?(?:.)?\b(?<domain>youtube\.com)?\b(?:\/playlist\?list=)?\b(?<playlistid>[-a-zA-Z0-9()_]{18,34})\b/;
