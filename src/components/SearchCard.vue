@@ -167,8 +167,10 @@ export default {
       this.$router.push('/playlists');
     },
     setPlaylistUrl: function (values) {
-      if (!values.listID)
+      if (!values.listID) {
+        // TODO: Show an alert to the user for invalid ID
         throw new TypeError('Playlist ID must be a valid value');
+      }
 
       this.playlistUrl.protocol = values.protocol ? values.protocol : 'https';
       this.playlistUrl.subdomain = values.subdomain ? values.subdomain : 'www';
