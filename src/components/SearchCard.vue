@@ -80,6 +80,7 @@ import { debounce } from '../utils/helpers';
 export default {
   data: () => ({
     resultCard: false,
+
     playlistUrl: {
       raw: '',
       protocol: '',
@@ -87,6 +88,7 @@ export default {
       domain: '',
       listID: '',
     },
+
     autocompleteText: {
       hidden: '',
       visible: '',
@@ -160,6 +162,9 @@ export default {
           }),
         },
       ];
+    },
+    debouncedSetAutocompleteHint: function () {
+      return debounce(this.setAutocompleteHint, 250);
     },
   },
   methods: {
@@ -241,10 +246,7 @@ export default {
             );
             break;
           }
-          this.autocompleteText.hidden = this.autocompleteText.visible = '';
         }
-      } else {
-        this.autocompleteText.hidden = this.autocompleteText.visible = '';
       }
     },
     doAutocomplete: function () {
@@ -252,10 +254,17 @@ export default {
         this.playlistUrl.raw += this.autocompleteText.visible;
       }
     },
+    clearAutocomplete: function () {
+      this.autocompleteText.hidden = this.autocompleteText.visible = '';
+    },
   },
   watch: {
     'playlistUrl.raw': function (url) {
-      debounce(value => this.setAutocompleteHint(value), 100)(url);
+      this.clearAutocomplete();
+
+      // cancel previous debounced action (if any) and do a new one
+      this.debouncedSetAutocompleteHint.cancel();
+      this.debouncedSetAutocompleteHint(url);
 
       let re =
         /\b(?<protocol>[https]{4,5})?(?::\/\/)?\b(?<subdomain>www|m)?(?:.)?\b(?<domain>youtube\.com)?\b(?:\/playlist\?list=)?\b(?<playlistid>[-a-zA-Z0-9()_]{18,34})\b/;
