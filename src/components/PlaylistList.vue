@@ -1,15 +1,18 @@
 <template>
-  <v-row>
-    <v-hover v-for="item in videos" :key="item.dateUploaded" v-slot="{ hover }">
-      <playlist-list-item :hover="hover" :item="item" />
-    </v-hover>
-  </v-row>
+  <playlist-list-pagination :items="videos">
+    <template v-slot:default="{ item }">
+      <v-hover v-slot="{ hover }">
+        <playlist-list-item :hover="hover" :item="item" />
+      </v-hover>
+    </template>
+  </playlist-list-pagination>
 </template>
 
 <script>
 import PlaylistListItem from './PlaylistListItem.vue';
+import PlaylistListPagination from './Pagination.vue';
 export default {
-  components: { PlaylistListItem },
+  components: { PlaylistListItem, PlaylistListPagination },
   props: ['videos'],
 };
 </script>

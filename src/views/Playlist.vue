@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <p class="text-h3 ma-2">Playlist name placeholder</p>
+      <p class="text-h3 ma-2">Videos</p>
     </v-row>
     <playlist-list :videos="videos" />
   </v-container>
@@ -24,7 +24,17 @@ export default {
         videoID: 'txmKr69jGBk',
       },
       {
-        title: 'Levitating Barbecue! Electromagnetic Induction',
+        title: 'What\'s In A Candle Flame?',
+        channel: 'Veritasium',
+        dateUploaded: 'Sep 12, 2012',
+        duration: '3:45',
+        views: '2294421',
+        likes: '35932',
+        dislikes: '280',
+        videoID: 'txmKr69jGBk',
+      },
+      {
+        title: 'Make Plasma With Grapes In The Microwave!',
         channel: 'Veritasium',
         dateUploaded: 'Oct 9, 2012',
         duration: '3:45',
@@ -34,7 +44,7 @@ export default {
         videoID: 'txmKr69jGBk',
       },
       {
-        title: 'Levitating Barbecue! Electromagnetic Induction',
+        title: 'Making SOLID Nitrogen!',
         channel: 'Veritasium',
         dateUploaded: 'Oct 9, 2012',
         duration: '3:45',
@@ -44,7 +54,7 @@ export default {
         videoID: 'txmKr69jGBk',
       },
       {
-        title: 'Levitating Barbecue! Electromagnetic Induction',
+        title: 'Imploding Drum',
         channel: 'Veritasium',
         dateUploaded: 'Oct 9, 2012',
         duration: '3:45',
@@ -54,7 +64,7 @@ export default {
         videoID: 'txmKr69jGBk',
       },
       {
-        title: 'Levitating Barbecue! Electromagnetic Induction',
+        title: 'Fire Syringe',
         channel: 'Veritasium',
         dateUploaded: 'Oct 9, 2012',
         duration: '3:45',
@@ -64,7 +74,7 @@ export default {
         videoID: 'txmKr69jGBk',
       },
       {
-        title: 'Levitating Barbecue! Electromagnetic Induction',
+        title: 'Chain Drop Experiment',
         channel: 'Veritasium',
         dateUploaded: 'Oct 9, 2012',
         duration: '3:45',
@@ -74,7 +84,7 @@ export default {
         videoID: 'txmKr69jGBk',
       },
       {
-        title: 'Levitating Barbecue! Electromagnetic Induction',
+        title: 'Chain Drop Answer 2',
         channel: 'Veritasium',
         dateUploaded: 'Oct 9, 2012',
         duration: '3:45',
@@ -84,7 +94,7 @@ export default {
         videoID: 'txmKr69jGBk',
       },
       {
-        title: 'Levitating Barbecue! Electromagnetic Induction',
+        title: 'Supercooled Water - Explained!',
         channel: 'Veritasium',
         dateUploaded: 'Oct 9, 2012',
         duration: '3:45',
@@ -94,7 +104,7 @@ export default {
         videoID: 'txmKr69jGBk',
       },
       {
-        title: 'Levitating Barbecue! Electromagnetic Induction',
+        title: 'Persistence Of Vision',
         channel: 'Veritasium',
         dateUploaded: 'Oct 9, 2012',
         duration: '3:45',
@@ -104,7 +114,7 @@ export default {
         videoID: 'txmKr69jGBk',
       },
       {
-        title: 'Levitating Barbecue! Electromagnetic Induction',
+        title: 'Can You Solve This Shadow Illusion?',
         channel: 'Veritasium',
         dateUploaded: 'Oct 9, 2012',
         duration: '3:45',
@@ -114,7 +124,7 @@ export default {
         videoID: 'txmKr69jGBk',
       },
       {
-        title: 'Levitating Barbecue! Electromagnetic Induction',
+        title: 'Why Is Ice Slippery?',
         channel: 'Veritasium',
         dateUploaded: 'Oct 9, 2012',
         duration: '3:45',
@@ -124,7 +134,7 @@ export default {
         videoID: 'txmKr69jGBk',
       },
       {
-        title: 'Levitating Barbecue! Electromagnetic Induction',
+        title: 'Does Pressure Melt Ice?',
         channel: 'Veritasium',
         dateUploaded: 'Oct 9, 2012',
         duration: '3:45',
@@ -134,7 +144,7 @@ export default {
         videoID: 'txmKr69jGBk',
       },
       {
-        title: 'Levitating Barbecue! Electromagnetic Induction',
+        title: 'Ice Cutting Experiment',
         channel: 'Veritasium',
         dateUploaded: 'Oct 9, 2012',
         duration: '3:45',
@@ -144,7 +154,7 @@ export default {
         videoID: 'txmKr69jGBk',
       },
       {
-        title: 'Levitating Barbecue! Electromagnetic Induction',
+        title: 'Misconceptions About Heat',
         channel: 'Veritasium',
         dateUploaded: 'Oct 9, 2012',
         duration: '3:45',
@@ -154,17 +164,7 @@ export default {
         videoID: 'txmKr69jGBk',
       },
       {
-        title: 'Levitating Barbecue! Electromagnetic Induction',
-        channel: 'Veritasium',
-        dateUploaded: 'Oct 9, 2012',
-        duration: '3:45',
-        views: '2294421',
-        likes: '35932',
-        dislikes: '280',
-        videoID: 'txmKr69jGBk',
-      },
-      {
-        title: 'Levitating Barbecue! Electromagnetic Induction',
+        title: 'Galileo the Scientific Parrot',
         channel: 'Veritasium',
         dateUploaded: 'Oct 9, 2012',
         duration: '3:45',
