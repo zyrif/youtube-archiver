@@ -1,8 +1,8 @@
 <template>
   <v-card
-    v-ripple
-    class="elevation-4 ma-2"
-    :class="hover ? 'red' : 'white'"
+    class="ma-2"
+    :class="hover ? 'red elevation-2' : 'grey lighten-2 elevation-0'"
+    :ripple="false"
     width="100%"
     @click="$emit('playlist-selected', item.id)"
   >

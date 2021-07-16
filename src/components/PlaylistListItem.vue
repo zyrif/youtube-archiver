@@ -1,8 +1,6 @@
 <template>
   <v-card
-    v-ripple
-    class="elevation-4 ma-2"
-    :class="hover ? 'grey' : 'white'"
+    class="ma-2 grey lighten-2 elevation-0"
     width="100%"
   >
     <v-card-title>{{ item.title }}</v-card-title>
