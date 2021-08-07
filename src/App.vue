@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar app elevation="0">
-      <div class="text-h4" @click="titleHandler">
+      <div class="text-h4" style="cursor: pointer" @click="titleHandler">
         <v-icon left class="pb-1" color="red">fas fa-play</v-icon>
         <span class="red--text">Tube</span>Tracker
       </div>
