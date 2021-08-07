@@ -4,6 +4,10 @@
       <v-toolbar-title>
         {{ isSigningUp ? 'Sign Up' : 'Log In' }}
       </v-toolbar-title>
+      <v-spacer />
+      <v-btn text @click="toggleForm">
+        {{ isSigningUp ? 'Log In' : 'Sign Up' }}
+      </v-btn>
     </v-toolbar>
     <v-card-text>
       <v-form>
@@ -121,6 +125,9 @@ export default {
     ...mapGetters(['authToken']),
   },
   methods: {
+    toggleForm () {
+      this.isSigningUp = !this.isSigningUp;
+    },
     doAuthAction() {
       if (
         (!this.isSigningUp && this.email && this.password) ||
@@ -170,9 +177,9 @@ export default {
       } else {
         let fields = ['email', 'password'];
         if (this.isSigningUp) fields.push('password-confirm');
-        fields.forEach(value => {
+        fields.forEach((value) => {
           this.$refs[value].validate(true);
-        })
+        });
       }
     },
     clickLoginBtn(keyevent) {
