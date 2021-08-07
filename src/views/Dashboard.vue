@@ -1,7 +1,8 @@
 <template>
   <v-container>
+    <v-breadcrumbs :items="breadcrumbs" />
     <v-row>
-      <p class="text-h3 ma-2">Playlists:</p>
+      <p class="text-h3 ma-2">Playlists</p>
     </v-row>
     <dashboard-list :items="playlists" />
   </v-container>
@@ -55,8 +56,16 @@ export default {
       },
     ],
   }),
+  computed: {
+    breadcrumbs: function () {
+      return this.$route.meta.breadCrumbs;
+    }
+  }
 };
 </script>
 
-<style>
+<style scoped>
+.v-breadcrumbs {
+  padding-left: 0 !important;
+}
 </style>

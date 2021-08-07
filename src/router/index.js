@@ -9,18 +9,50 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'Landing',
+    name: 'Home',
     component: Landing
   },
   {
     path: '/playlists',
-    name: 'Dashboard',
-    component: Dashboard
+    name: 'Playlists',
+    component: Dashboard,
+    meta: {
+      breadCrumbs: [
+        {
+          text: 'Home',
+          to: {
+            path: '/'
+          }
+        },
+        {
+          text: 'Playlists',
+        }
+      ]
+    }
   },
   {
     path: '/playlist/:id',
-    name: 'Playlist',
+    name: 'Videos',
     component: Playlist,
+    meta: {
+      breadCrumbs: [
+        {
+          text: 'Home',
+          to: {
+            path: '/'
+          }
+        },
+        {
+          text: 'Playlists',
+          to: {
+            path: '/playlists'
+          }
+        },
+        {
+          text: 'Videos',
+        }
+      ]
+    }
   }
   // {
   //   path: '/about',
