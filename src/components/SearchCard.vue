@@ -55,6 +55,7 @@
     </v-card-text>
     <v-card-actions v-if="resultCard">
       <v-row class="ma-1" align="center" justify="end">
+        <v-btn text @click="resetHandler"> reset </v-btn>
         <v-btn text @click="trackHandler"> track </v-btn>
       </v-row>
     </v-card-actions>
@@ -170,6 +171,10 @@ export default {
   methods: {
     trackHandler: function () {
       this.$router.push('/playlists');
+    },
+    resetHandler: function () {
+      this.playlistUrl.raw = '';
+      this.resultCard = false;
     },
     setPlaylistUrl: function (values) {
       if (!values.listID) {
