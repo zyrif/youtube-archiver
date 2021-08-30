@@ -176,6 +176,22 @@ export default {
       this.playlistUrl.raw = '';
       this.resultCard = false;
     },
+    checkPlaylistUrl: function (url) {
+      let re =
+        /\b(?<protocol>[https]{4,5})?(?::\/\/)?\b(?<subdomain>www|m)?(?:.)?\b(?<domain>youtube\.com)?\b(?:\/playlist\?list=)?\b(?<playlistid>[-a-zA-Z0-9()_]{18,34})\b/;
+      if (re.test(url)) {
+        let matches = re.exec(url);
+
+        this.setPlaylistUrl({
+          protocol: matches.groups.protocol,
+          subdomain: matches.groups.subdomain,
+          domain: matches.groups.domain,
+          listID: matches.groups.playlistid,
+        });
+
+        this.resultCard = true;
+      }
+    },
     setPlaylistUrl: function (values) {
       if (!values.listID) {
         // TODO: Show an alert to the user for invalid ID
@@ -271,20 +287,7 @@ export default {
       this.debouncedSetAutocompleteHint.cancel();
       this.debouncedSetAutocompleteHint(url);
 
-      let re =
-        /\b(?<protocol>[https]{4,5})?(?::\/\/)?\b(?<subdomain>www|m)?(?:.)?\b(?<domain>youtube\.com)?\b(?:\/playlist\?list=)?\b(?<playlistid>[-a-zA-Z0-9()_]{18,34})\b/;
-      if (re.test(url)) {
-        let matches = re.exec(url);
-
-        this.setPlaylistUrl({
-          protocol: matches.groups.protocol,
-          subdomain: matches.groups.subdomain,
-          domain: matches.groups.domain,
-          listID: matches.groups.playlistid,
-        });
-
-        this.resultCard = true;
-      }
+      this.checkPlaylistUrl(url);
     },
   },
 };
