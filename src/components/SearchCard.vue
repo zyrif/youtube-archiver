@@ -95,6 +95,8 @@ export default {
       visible: '',
     },
 
+    usedHints: [],
+
     playlistInfo: {
       title: 'Misconceptions',
       channel: 'Veritasium',
@@ -111,6 +113,7 @@ export default {
         {
           key: 'http',
           value: 'http://',
+          mutuallyExclusive: 'https',
           positions: this.getHintPositions({
             initialPosition: 1,
             value: 'http://',
@@ -120,6 +123,7 @@ export default {
         {
           key: 'https',
           value: 'https://',
+          mutuallyExclusive: 'http',
           positions: this.getHintPositions({
             initialPosition: 1,
             value: 'https://',
@@ -129,6 +133,7 @@ export default {
         {
           key: 'www',
           value: 'www.',
+          mutuallyExclusive: 'm',
           positions: this.getHintPositions({
             initialPosition: 1,
             value: 'www.',
@@ -138,6 +143,7 @@ export default {
         {
           key: 'm',
           value: 'm.',
+          mutuallyExclusive: 'www',
           positions: this.getHintPositions({
             initialPosition: 1,
             value: 'm.',
@@ -147,6 +153,7 @@ export default {
         {
           key: 'youtube',
           value: 'youtube.com',
+          mutuallyExclusive: '',
           positions: this.getHintPositions({
             initialPosition: 1,
             value: 'youtube.com',
@@ -156,6 +163,7 @@ export default {
         {
           key: 'path',
           value: '/playlist?list=',
+          mutuallyExclusive: '',
           positions: this.getHintPositions({
             initialPosition: 11,
             value: '/playlist?list=',
@@ -243,30 +251,40 @@ export default {
       return positions;
     },
     setAutocompleteHint: function (value) {
-      let trimmedValue = value;
+      let trimmed = value;
       this.keywords.forEach((element) => {
-        trimmedValue = trimmedValue.replace(element.value, '');
+        let diff = trimmed;
+        trimmed = trimmed.replace(element.value, '');
+
+        if (diff.length !== trimmed.length) {
+          this.usedHints.push(element.key);
+          
+          if (element.mutuallyExclusive !== '') {
+            this.usedHints.push(element.mutuallyExclusive);
+          }
+        }
       });
 
-      if (trimmedValue.length > 0) {
-        for (let i = 0; i < this.keywords.length; ++i) {
-          let element = this.keywords[i];
-          if (
-            trimmedValue.length <= element.value.length &&
-            element.value.match(
-              new RegExp(
-                '^' + trimmedValue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-              )
-            ) !== null &&
-            element.positions.includes(value.length)
-          ) {
-            this.autocompleteText.hidden = value;
-            this.autocompleteText.visible = element.value.replace(
-              trimmedValue,
-              ''
-            );
-            break;
-          }
+      // trimmed = ;
+
+      if (trimmed.length < 1) {
+        return;
+      }
+
+      for (let i = 0; i < this.keywords.length; ++i) {
+        let element = this.keywords[i];
+        if (
+          !this.usedHints.includes(element.key) &&
+          trimmed.length <= element.value.length &&
+          element.value.match(new RegExp(`^${trimmed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`)) !== null &&
+          element.positions.includes(value.length)
+        ) {
+          this.autocompleteText.hidden = value;
+          this.autocompleteText.visible = element.value.replace(
+            trimmed,
+            ''
+          );
+          return;
         }
       }
     },
@@ -277,6 +295,7 @@ export default {
     },
     clearAutocomplete: function () {
       this.autocompleteText.hidden = this.autocompleteText.visible = '';
+      this.usedHints = [];
     },
   },
   watch: {
