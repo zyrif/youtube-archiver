@@ -43,6 +43,7 @@
         <span class="text-subtitle-2">
           {{ playlistInfo.numOfVideo }} Videos
         </span>
+        &nbsp; &nbsp;
         <span class="text-subtitle-2">
           {{ playlistInfo.numOfView }} Views
         </span>
