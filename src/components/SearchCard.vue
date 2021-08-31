@@ -61,7 +61,7 @@
       </v-row>
     </v-card-actions>
     <v-card-text v-else>
-      <div class="v-label" id="divAutocompleteHint">
+      <div class="v-label" id="div-hint-text">
         <span class="hint-hidden">{{ autocompleteText.hidden }}</span
         ><span>{{ autocompleteText.visible }}</span>
       </div>
@@ -97,6 +97,7 @@ export default {
     },
 
     usedHints: [],
+    hintPositions: {},
 
     playlistInfo: {
       title: 'Misconceptions',
@@ -110,72 +111,62 @@ export default {
   }),
   computed: {
     keywords: function () {
-      return [
-        {
+      return {
+        http: {
           key: 'http',
           value: 'http://',
           mutuallyExclusive: 'https',
-          positions: this.getHintPositions({
-            initialPosition: 1,
-            value: 'http://',
-            hintsBefore: [],
-          }),
+          initialPosition: 1,
+          predecessors: [],
         },
-        {
+        https: {
           key: 'https',
           value: 'https://',
           mutuallyExclusive: 'http',
-          positions: this.getHintPositions({
-            initialPosition: 1,
-            value: 'https://',
-            hintsBefore: [],
-          }),
+          initialPosition: 1,
+          predecessors: [],
         },
-        {
+        www: {
           key: 'www',
           value: 'www.',
           mutuallyExclusive: 'm',
-          positions: this.getHintPositions({
-            initialPosition: 1,
-            value: 'www.',
-            hintsBefore: ['http://', 'https://'],
-          }),
+          initialPosition: 1,
+          predecessors: ['http', 'https'],
         },
-        {
+        m: {
           key: 'm',
           value: 'm.',
           mutuallyExclusive: 'www',
-          positions: this.getHintPositions({
-            initialPosition: 1,
-            value: 'm.',
-            hintsBefore: ['http://', 'https://'],
-          }),
+          initialPosition: 1,
+          predecessors: ['http', 'https'],
         },
-        {
+        youtube: {
           key: 'youtube',
           value: 'youtube.com',
           mutuallyExclusive: '',
-          positions: this.getHintPositions({
-            initialPosition: 1,
-            value: 'youtube.com',
-            hintsBefore: ['http://', 'https://', 'www.', 'm.'],
-          }),
+          initialPosition: 1,
+          predecessors: ['http', 'https', 'www', 'm'],
         },
-        {
+        path: {
           key: 'path',
           value: '/playlist?list=',
           mutuallyExclusive: '',
-          positions: this.getHintPositions({
-            initialPosition: 11,
-            value: '/playlist?list=',
-            hintsBefore: ['http://', 'https://', 'www.', 'm.', 'youtube.com'],
-          }),
+          initialPosition: 11,
+          predecessors: ['http', 'https', 'www', 'm', 'youtube'],
         },
-      ];
+      };
     },
     debouncedSetAutocompleteHint: function () {
       return debounce(this.setAutocompleteHint, 250);
     },
+  },
+  mounted: function () {
+    for (const keyword in this.keywords) {
+      const hint = this.keywords[keyword];
+      Object.assign(this.hintPositions, {
+        [hint.key]: [...this.getHintPositions(hint)],
+      });
+    }
   },
   methods: {
     trackHandler: function () {
@@ -212,79 +203,73 @@ export default {
       this.playlistUrl.domain = values.domain ? values.domain : 'youtube.com';
       this.playlistUrl.listID = values.listID;
     },
-    getHintPositions: function (obj) {
+    getHintPositions: function (hint) {
       // this function is used to calculate where the hint will activate based on url field length
-      let positions = [...Array(obj.value.length).keys()].map(
-        (i) => i + obj.initialPosition
+      let positions = [...Array(hint.value.length).keys()].map(
+        (i) => i + hint.initialPosition
       );
 
       let lastHintOffset = 0;
-      for (let i = 0; i < obj.hintsBefore.length; ++i) {
-        // url can have either http or https, not both
-        // TODO: Make this NOT hardcoded
+      for (let i = 0; i < hint.predecessors.length; ++i) {
+        let predecessor = this.keywords[hint.predecessors[i]];
         if (i > 0) {
           if (
-            obj.hintsBefore[i] === 'https://' &&
-            obj.hintsBefore[i - 1] === 'http://'
+            predecessor.mutuallyExclusive !== '' &&
+            hint.predecessors[i - 1] === predecessor.mutuallyExclusive
           ) {
-            lastHintOffset -= obj.hintsBefore[i - 1].length;
-          } else if (
-            obj.hintsBefore[i] === 'm.' &&
-            obj.hintsBefore[i - 1] === 'www.'
-          ) {
-            lastHintOffset -= obj.hintsBefore[i - 1].length;
+            let mutuallyExclusive =
+              this.keywords[predecessor.mutuallyExclusive];
+            lastHintOffset -= mutuallyExclusive.value.length;
           }
         }
 
-        let newPositions = [...Array(obj.value.length).keys()].map(
+        let newPositions = [...Array(hint.value.length).keys()].map(
           (j) =>
-            j + obj.initialPosition + obj.hintsBefore[i].length + lastHintOffset
+            j + hint.initialPosition + predecessor.value.length + lastHintOffset
         );
         // only push unique positions
         newPositions.forEach((element) => {
-          if (!positions.includes(element)) positions.push(element);
+          if (!positions.includes(element)) {
+            positions.push(element);
+          }
         });
 
-        lastHintOffset += obj.hintsBefore[i].length;
+        lastHintOffset += predecessor.value.length;
       }
 
-      // BUG: positions for /playlist?list= are wrong
       return positions;
     },
     setAutocompleteHint: function (value) {
       let trimmed = value;
-      this.keywords.forEach((element) => {
+      for (const keyword in this.keywords) {
+        const element = this.keywords[keyword];
         let diff = trimmed;
         trimmed = trimmed.replace(element.value, '');
 
         if (diff.length !== trimmed.length) {
           this.usedHints.push(element.key);
-          
           if (element.mutuallyExclusive !== '') {
             this.usedHints.push(element.mutuallyExclusive);
           }
         }
-      });
-
-      // trimmed = ;
+      }
 
       if (trimmed.length < 1) {
         return;
       }
 
-      for (let i = 0; i < this.keywords.length; ++i) {
-        let element = this.keywords[i];
+      for (const keyword in this.keywords) {
+        const element = this.keywords[keyword];
         if (
           !this.usedHints.includes(element.key) &&
           trimmed.length <= element.value.length &&
-          element.value.match(new RegExp(`^${trimmed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`)) !== null &&
-          element.positions.includes(value.length)
+          element.value.match(
+            new RegExp(`^${trimmed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`)
+          ) !== null &&
+          this.hintPositions[element.key].includes(value.length)
         ) {
           this.autocompleteText.hidden = value;
-          this.autocompleteText.visible = element.value.replace(
-            trimmed,
-            ''
-          );
+          this.autocompleteText.visible = element.value.replace(trimmed, '');
           return;
         }
       }
@@ -294,14 +279,14 @@ export default {
         this.playlistUrl.raw += this.autocompleteText.visible;
       }
     },
-    clearAutocomplete: function () {
+    resetAutocomplete: function () {
       this.autocompleteText.hidden = this.autocompleteText.visible = '';
       this.usedHints = [];
     },
   },
   watch: {
     'playlistUrl.raw': function (url) {
-      this.clearAutocomplete();
+      this.resetAutocomplete();
 
       // cancel previous debounced action (if any) and do a new one
       this.debouncedSetAutocompleteHint.cancel();
@@ -314,8 +299,8 @@ export default {
 </script>
 
 <style scoped>
-#divAutocompleteHint {
-  transform: translateX(0px) translateY(27px);
+#div-hint-text {
+  transform: translateX(0px) translateY(28px);
   min-height: 16px;
 }
 
