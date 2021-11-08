@@ -29,35 +29,45 @@
           {{ playlistUrl.listID }}
         </v-chip>
       </v-row>
-      <v-row class="mx-1" align="center" justify="start">
-        <p class="text-h4">
-          {{ playlistInfo.title }}
-        </p>
-      </v-row>
-      <v-row class="mx-1" align="center" justify="start">
-        <p class="text-subtitle-1 py-0">
-          {{ playlistInfo.channel }}
-        </p>
-      </v-row>
-      <v-row class="mx-1" align="center" justify="start">
-        <span class="text-subtitle-2">
-          {{ playlistInfo.numOfVideo }}
-        </span>
-        &nbsp; &nbsp;
-        <span class="text-subtitle-2">
-          {{ playlistInfo.numOfView }}
-        </span>
-      </v-row>
-      <v-row class="mx-1" align="center" justify="start">
-        <p class="text-subtitle-3">
-          {{ playlistInfo.lastUpdated }}
-        </p>
-      </v-row>
-      <v-row class="mx-1" align="end">
-        <p class="text-body-1">
-          {{ playlistInfo.description }}
-        </p>
-      </v-row>
+      <v-skeleton-loader :loading="isLoading" type="heading" class="mt-6">
+        <v-row class="mx-1" align="center" justify="start">
+          <span class="text-h4">
+            {{ playlistInfo.title }}
+          </span>
+        </v-row>
+      </v-skeleton-loader>
+      <v-skeleton-loader :loading="isLoading" type="text" max-width="100px" class="mt-4">
+        <v-row class="mx-1" align="center" justify="start">
+          <p class="text-subtitle-1">
+            {{ playlistInfo.channel }}
+          </p>
+        </v-row>
+      </v-skeleton-loader>
+      <v-skeleton-loader :loading="isLoading" type="text" max-width="150px" class="mt-3">
+        <v-row class="mx-1" align="center" justify="start">
+          <span class="text-subtitle-2">
+            {{ playlistInfo.numOfVideo }}
+          </span>
+          &nbsp; &nbsp;
+          <span class="text-subtitle-2">
+            {{ playlistInfo.numOfView }}
+          </span>
+        </v-row>
+      </v-skeleton-loader>
+      <v-skeleton-loader :loading="isLoading" type="text" max-width="170px" class="mt-1">
+        <v-row class="mx-1" align="center" justify="start">
+          <p class="text-subtitle-2 mt-2">
+            {{ playlistInfo.lastUpdated }}
+          </p>
+        </v-row>
+      </v-skeleton-loader>
+      <v-skeleton-loader :loading="isLoading" type="paragraph" max-width="500px" class="mt-4">
+        <v-row class="mx-1" align="end">
+          <p class="text-body-1">
+            {{ playlistInfo.description }}
+          </p>
+        </v-row>
+      </v-skeleton-loader>
     </v-card-text>
     <v-card-actions v-if="resultCard">
       <v-row class="ma-1" align="center" justify="end">
@@ -105,16 +115,18 @@ export default {
     hintPositions: {},
 
     playlistInfo: {
-      title: 'Misconceptions',
-      channel: 'Veritasium',
-      numOfVideo: '33 Videos',
-      numOfView: '26,14,286 views',
-      lastUpdated: 'Last Updated on 2021-06-01',
-      description:
-        "Misconceptions about science are common. Sometimes these alternative ideas make a lot of sense, which is why it's so hard to change our ideas about the natural world.",
+      title: '',
+      channel: '',
+      numOfVideo: '',
+      numOfView: '',
+      lastUpdated: '',
+      description: "",
     },
   }),
   computed: {
+    isLoading: function () {
+      return this.playlistInfo.title === '';
+    },
     keywords: function () {
       return {
         http: {
