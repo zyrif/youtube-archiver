@@ -72,7 +72,7 @@
     <v-card-actions v-if="resultCard">
       <v-row class="ma-1" align="center" justify="end">
         <v-btn text @click="resetHandler"> reset </v-btn>
-        <v-btn text @click="trackHandler"> track </v-btn>
+        <v-btn text :disabled="isLoading" @click="trackHandler"> track </v-btn>
       </v-row>
     </v-card-actions>
     <v-card-text v-else>
@@ -93,6 +93,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import { debounce } from '../utils/helpers';
 export default {
   data: () => ({
@@ -190,7 +191,9 @@ export default {
       this.$router.push('/playlists');
     },
     resetHandler: function () {
+      // TODO: also cancel any pending axios request
       this.playlistUrl.raw = '';
+      this.playlistInfo.title = '';
       this.resultCard = false;
     },
     checkPlaylistUrl: function (url) {
@@ -207,6 +210,7 @@ export default {
         });
 
         this.resultCard = true;
+        this.fetchResult();
       }
     },
     setPlaylistUrl: function (values) {
@@ -299,6 +303,42 @@ export default {
     resetAutocomplete: function () {
       this.autocompleteText.hidden = this.autocompleteText.visible = '';
       this.usedHints = [];
+    },
+    fetchResult: function () {
+      let url = 'http://127.0.0.1:3000/pl-metadata';
+      axios
+        .get(url, {
+          params: {
+            id: this.playlistUrl.listID,
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            this.playlistInfo.title = response.data['title'];
+            this.playlistInfo.description = response.data['description'];
+            this.playlistInfo.numOfVideo = response.data['num_of_videos'];
+            this.playlistInfo.numOfView = response.data['views'];
+            this.playlistInfo.lastUpdated = response.data['last_updated'];
+            this.playlistInfo.channel = response.data['uploader'];
+          }
+        })
+        .catch((error) => {
+          if (!error.status && error.message === 'Network Error') {
+            console.log('no network');
+          } else if (
+            error.response.status >= 400 &&
+            error.response.status <= 499
+          ) {
+            console.log('invalid request');
+          } else if (
+            error.response.status >= 500 &&
+            error.response.status <= 599
+          ) {
+            console.log('API error');
+          } else {
+            console.error(error);
+          }
+        });
     },
   },
   watch: {
