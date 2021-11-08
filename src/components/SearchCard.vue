@@ -41,15 +41,20 @@
       </v-row>
       <v-row class="mx-1" align="center" justify="start">
         <span class="text-subtitle-2">
-          {{ playlistInfo.numOfVideo }} Videos
+          {{ playlistInfo.numOfVideo }}
         </span>
         &nbsp; &nbsp;
         <span class="text-subtitle-2">
-          {{ playlistInfo.numOfView }} Views
+          {{ playlistInfo.numOfView }}
         </span>
       </v-row>
+      <v-row class="mx-1" align="center" justify="start">
+        <p class="text-subtitle-3">
+          {{ playlistInfo.lastUpdated }}
+        </p>
+      </v-row>
       <v-row class="mx-1" align="end">
-        <p class="text-body-1 pt-2">
+        <p class="text-body-1">
           {{ playlistInfo.description }}
         </p>
       </v-row>
@@ -102,9 +107,9 @@ export default {
     playlistInfo: {
       title: 'Misconceptions',
       channel: 'Veritasium',
-      numOfVideo: 33,
-      numOfView: 2614286,
-      dateLastUpdated: new Date('2021-06-01'),
+      numOfVideo: '33 Videos',
+      numOfView: '26,14,286 views',
+      lastUpdated: 'Last Updated on 2021-06-01',
       description:
         "Misconceptions about science are common. Sometimes these alternative ideas make a lot of sense, which is why it's so hard to change our ideas about the natural world.",
     },
