@@ -1,101 +1,128 @@
 <template>
-  <v-card class="mx-auto" outlined max-width="720px">
-    <v-card-title v-if="resultCard"> Track A New Playlist </v-card-title>
-    <v-card-text v-if="resultCard">
-      <v-row class="ma-1" align="start">
-        <v-chip
-          class="ma-1"
-          v-if="playlistUrl.protocol"
-          :color="playlistUrl.protocol === 'https' ? 'success' : 'warning'"
-          label
+  <div style="display: contents">
+    <v-card class="mx-auto" outlined max-width="720px">
+      <v-card-title v-if="resultCard"> Track A New Playlist </v-card-title>
+      <v-card-text v-if="resultCard">
+        <v-row class="ma-1" align="start">
+          <v-chip
+            class="ma-1"
+            v-if="playlistUrl.protocol"
+            :color="playlistUrl.protocol === 'https' ? 'success' : 'warning'"
+            label
+          >
+            {{ playlistUrl.protocol }}
+          </v-chip>
+          <v-chip
+            class="ma-1"
+            v-if="playlistUrl.subdomain"
+            :color="playlistUrl.subdomain === 'www' ? 'primary' : 'error'"
+            label
+          >
+            {{ playlistUrl.subdomain }}
+          </v-chip>
+          <v-chip class="ma-1" v-if="playlistUrl.domain" color="error" label>
+            {{ playlistUrl.domain }}
+          </v-chip>
+          <v-chip class="ma-1" v-if="playlistUrl.domain" label outlined>
+            /playlist?list=
+          </v-chip>
+          <v-chip class="ma-1" label>
+            {{ playlistUrl.listID }}
+          </v-chip>
+        </v-row>
+        <v-skeleton-loader :loading="isLoading" type="heading" class="mt-6">
+          <v-row class="mx-1" align="center" justify="start">
+            <span class="text-h4">
+              {{ playlistInfo.title }}
+            </span>
+          </v-row>
+        </v-skeleton-loader>
+        <v-skeleton-loader
+          :loading="isLoading"
+          type="text"
+          max-width="100px"
+          class="mt-4"
         >
-          {{ playlistUrl.protocol }}
-        </v-chip>
-        <v-chip
-          class="ma-1"
-          v-if="playlistUrl.subdomain"
-          :color="playlistUrl.subdomain === 'www' ? 'primary' : 'error'"
-          label
+          <v-row class="mx-1" align="center" justify="start">
+            <p class="text-subtitle-1">
+              {{ playlistInfo.channel }}
+            </p>
+          </v-row>
+        </v-skeleton-loader>
+        <v-skeleton-loader
+          :loading="isLoading"
+          type="text"
+          max-width="150px"
+          class="mt-3"
         >
-          {{ playlistUrl.subdomain }}
-        </v-chip>
-        <v-chip class="ma-1" v-if="playlistUrl.domain" color="error" label>
-          {{ playlistUrl.domain }}
-        </v-chip>
-        <v-chip class="ma-1" v-if="playlistUrl.domain" label outlined>
-          /playlist?list=
-        </v-chip>
-        <v-chip class="ma-1" label>
-          {{ playlistUrl.listID }}
-        </v-chip>
-      </v-row>
-      <v-skeleton-loader :loading="isLoading" type="heading" class="mt-6">
-        <v-row class="mx-1" align="center" justify="start">
-          <span class="text-h4">
-            {{ playlistInfo.title }}
-          </span>
+          <v-row class="mx-1" align="center" justify="start">
+            <span class="text-subtitle-2">
+              {{ playlistInfo.numOfVideo }}
+            </span>
+            &nbsp; &nbsp;
+            <span class="text-subtitle-2">
+              {{ playlistInfo.numOfView }}
+            </span>
+          </v-row>
+        </v-skeleton-loader>
+        <v-skeleton-loader
+          :loading="isLoading"
+          type="text"
+          max-width="170px"
+          class="mt-1"
+        >
+          <v-row class="mx-1" align="center" justify="start">
+            <p class="text-subtitle-2 mt-2">
+              {{ playlistInfo.lastUpdated }}
+            </p>
+          </v-row>
+        </v-skeleton-loader>
+        <v-skeleton-loader
+          :loading="isLoading"
+          type="paragraph"
+          max-width="500px"
+          class="mt-4"
+        >
+          <v-row class="mx-1" align="end">
+            <p class="text-body-1">
+              {{ playlistInfo.description }}
+            </p>
+          </v-row>
+        </v-skeleton-loader>
+      </v-card-text>
+      <v-card-actions v-if="resultCard">
+        <v-row class="ma-1" align="center" justify="end">
+          <v-btn text @click="resetHandler"> reset </v-btn>
+          <v-btn text :disabled="isLoading" @click="trackHandler">
+            track
+          </v-btn>
         </v-row>
-      </v-skeleton-loader>
-      <v-skeleton-loader :loading="isLoading" type="text" max-width="100px" class="mt-4">
-        <v-row class="mx-1" align="center" justify="start">
-          <p class="text-subtitle-1">
-            {{ playlistInfo.channel }}
-          </p>
-        </v-row>
-      </v-skeleton-loader>
-      <v-skeleton-loader :loading="isLoading" type="text" max-width="150px" class="mt-3">
-        <v-row class="mx-1" align="center" justify="start">
-          <span class="text-subtitle-2">
-            {{ playlistInfo.numOfVideo }}
-          </span>
-          &nbsp; &nbsp;
-          <span class="text-subtitle-2">
-            {{ playlistInfo.numOfView }}
-          </span>
-        </v-row>
-      </v-skeleton-loader>
-      <v-skeleton-loader :loading="isLoading" type="text" max-width="170px" class="mt-1">
-        <v-row class="mx-1" align="center" justify="start">
-          <p class="text-subtitle-2 mt-2">
-            {{ playlistInfo.lastUpdated }}
-          </p>
-        </v-row>
-      </v-skeleton-loader>
-      <v-skeleton-loader :loading="isLoading" type="paragraph" max-width="500px" class="mt-4">
-        <v-row class="mx-1" align="end">
-          <p class="text-body-1">
-            {{ playlistInfo.description }}
-          </p>
-        </v-row>
-      </v-skeleton-loader>
-    </v-card-text>
-    <v-card-actions v-if="resultCard">
-      <v-row class="ma-1" align="center" justify="end">
-        <v-btn text @click="resetHandler"> reset </v-btn>
-        <v-btn text :disabled="isLoading" @click="trackHandler"> track </v-btn>
-      </v-row>
-    </v-card-actions>
-    <v-card-text v-else>
-      <div class="v-label" id="div-hint-text">
-        <span class="hint-hidden">{{ autocompleteText.hidden }}</span
-        ><span>{{ autocompleteText.visible }}</span>
-      </div>
-      <v-text-field
-        v-model="playlistUrl.raw"
-        color="red"
-        label="Youtube Playlist URL"
-        placeholder="Paste the Youtube Playlist/Channel URL you want to track here"
-        hint="Ex. youtube.com/playlist?list=<Playlist ID>"
-        v-on:keydown.tab.prevent="doAutocomplete"
-      ></v-text-field>
-    </v-card-text>
-  </v-card>
+      </v-card-actions>
+      <v-card-text v-else>
+        <div class="v-label" id="div-hint-text">
+          <span class="hint-hidden">{{ autocompleteText.hidden }}</span
+          ><span>{{ autocompleteText.visible }}</span>
+        </div>
+        <v-text-field
+          v-model="playlistUrl.raw"
+          color="red"
+          label="Youtube Playlist URL"
+          placeholder="Paste the Youtube Playlist/Channel URL you want to track here"
+          hint="Ex. youtube.com/playlist?list=<Playlist ID>"
+          v-on:keydown.tab.prevent="doAutocomplete"
+        ></v-text-field>
+      </v-card-text>
+    </v-card>
+    <error-dialog ref="refSearchErrorDialog"></error-dialog>
+  </div>
 </template>
 
 <script>
+import ErrorDialog from '../components/SearchErrorDialog.vue';
 import axios from 'axios';
 import { debounce } from '../utils/helpers';
 export default {
+  components: { ErrorDialog },
   data: () => ({
     resultCard: false,
 
@@ -121,7 +148,7 @@ export default {
       numOfVideo: '',
       numOfView: '',
       lastUpdated: '',
-      description: "",
+      description: '',
     },
   }),
   computed: {
@@ -305,7 +332,7 @@ export default {
       this.usedHints = [];
     },
     fetchResult: function () {
-      let url = 'http://127.0.0.1:3000/pl-metadata';
+      let url = 'https://api.tectronus.com/yttracker/pl-metadata';
       axios
         .get(url, {
           params: {
@@ -323,21 +350,52 @@ export default {
           }
         })
         .catch((error) => {
+          let e;
           if (!error.status && error.message === 'Network Error') {
-            console.log('no network');
+            // TODO: Remove debug message
+            console.log(JSON.stringify(error, null, 4));
+            e = {
+              errorTitle: 'Network Error Occured',
+              errorMsg: 'Either Internet Is Unavailable Or The API Server Is Down.',
+            };
           } else if (
             error.response.status >= 400 &&
             error.response.status <= 499
           ) {
-            console.log('invalid request');
+            // TODO: Remove debug message
+            console.debug(JSON.stringify(error, null, 4));
+            e = {
+              errorTitle: 'Error!',
+              errorMsg: error.response.data.errorMessage,
+            };
           } else if (
             error.response.status >= 500 &&
             error.response.status <= 599
           ) {
-            console.log('API error');
+            // TODO: Remove debug message
+            console.debug(JSON.stringify(error.response, null, 4));
+            e = {
+              errorTitle: 'API Error',
+              errorMsg: error.response.data.errorMessage,
+            };
           } else {
-            console.error(error);
+            // TODO: Remove debug message
+            console.debug(JSON.stringify(error, null, 4));
+            e = {
+              errorTitle: 'Unknown Error',
+              errorMsg: 'An Unexpected Error Occured',
+            };
           }
+
+          this.$refs.refSearchErrorDialog
+            .open(e)
+            .then((result) => {
+              if (result) {
+                this.fetchResult();
+              } else {
+                this.resetHandler();
+              }
+            });
         });
     },
   },
