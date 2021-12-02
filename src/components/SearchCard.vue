@@ -352,38 +352,37 @@ export default {
         .catch((error) => {
           let e;
           if (!error.status && error.message === 'Network Error') {
-            // TODO: Remove debug message
-            console.log(JSON.stringify(error, null, 4));
             e = {
-              errorTitle: 'Network Error Occured',
-              errorMsg: 'Either Internet Is Unavailable Or The API Server Is Down.',
+              errorTitle: 'We can\'t communicate with the server!',
+              errorMsg: 'Either internet is unavailable or the API server itself is on fire.',
             };
           } else if (
             error.response.status >= 400 &&
             error.response.status <= 499
           ) {
-            // TODO: Remove debug message
-            console.debug(JSON.stringify(error, null, 4));
-            e = {
-              errorTitle: 'Error!',
-              errorMsg: error.response.data.errorMessage,
-            };
+            if (error.response.status === 401) {
+              e = {
+                errorTitle: 'We need to know who you are!',
+                errorMsg: 'To perform this action, please let us know who you are by Logging In.',
+              };
+            } else {
+              e = {
+                errorTitle: 'Avast!',
+                errorMsg: `It seems like we're doing something wrong on this side. Server replied with error: ${error.response.data.message}`,
+              };
+            }
           } else if (
             error.response.status >= 500 &&
             error.response.status <= 599
           ) {
-            // TODO: Remove debug message
-            console.debug(JSON.stringify(error.response, null, 4));
             e = {
-              errorTitle: 'API Error',
-              errorMsg: error.response.data.errorMessage,
+              errorTitle: 'Blast!',
+              errorMsg: `It seems like the server fell over. It replied with: ${error.response.data.message}`,
             };
           } else {
-            // TODO: Remove debug message
-            console.debug(JSON.stringify(error, null, 4));
             e = {
-              errorTitle: 'Unknown Error',
-              errorMsg: 'An Unexpected Error Occured',
+              errorTitle: 'Oh Noes!',
+              errorMsg: 'An Unexpected Error Occured. Your best bet is to contact us and let us know what\'s going on.',
             };
           }
 
