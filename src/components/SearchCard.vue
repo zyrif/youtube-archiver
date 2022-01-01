@@ -118,7 +118,7 @@
 </template>
 
 <script>
-import ErrorDialog from '../components/SearchErrorDialog.vue';
+import ErrorDialog from './ErrorDialog.vue';
 import axios from 'axios';
 import { debounce } from '../utils/helpers';
 export default {
@@ -355,6 +355,7 @@ export default {
             e = {
               errorTitle: 'We can\'t communicate with the server!',
               errorMsg: 'Either internet is unavailable or the API server itself is on fire.',
+              actionable: true,
             };
           } else if (
             error.response.status >= 400 &&
@@ -364,11 +365,13 @@ export default {
               e = {
                 errorTitle: 'We need to know who you are!',
                 errorMsg: 'To perform this action, please let us know who you are by Logging In.',
+                actionable: false,
               };
             } else {
               e = {
                 errorTitle: 'Avast!',
                 errorMsg: `It seems like we're doing something wrong on this side. Server replied with error: ${error.response.data.message}`,
+                actionable: true,
               };
             }
           } else if (
@@ -378,11 +381,13 @@ export default {
             e = {
               errorTitle: 'Blast!',
               errorMsg: `It seems like the server fell over. It replied with: ${error.response.data.message}`,
+              actionable: true,
             };
           } else {
             e = {
               errorTitle: 'Oh Noes!',
               errorMsg: 'An Unexpected Error Occured. Your best bet is to contact us and let us know what\'s going on.',
+              actionable: false,
             };
           }
 
