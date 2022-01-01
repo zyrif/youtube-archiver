@@ -61,7 +61,9 @@
 </template>
 
 <script>
-import axios from 'axios';
+// import axios from 'axios';
+import { AuthenticationDetails, CognitoUser, CognitoUserPool } from 'amazon-cognito-identity-js';
+
 import { mapGetters, mapMutations } from 'vuex';
 
 export default {
@@ -122,58 +124,108 @@ export default {
     },
 
     // map vuex getters
-    ...mapGetters(['authToken']),
+    ...mapGetters(['user']),
+  },
+  mounted: function () {
+    //
   },
   methods: {
-    toggleForm () {
+    toggleForm() {
       this.isSigningUp = !this.isSigningUp;
     },
     doAuthAction() {
-      if (
-        (!this.isSigningUp && this.email && this.password) ||
-        (this.isSigningUp &&
-          this.email &&
-          this.password &&
-          this.passwordConfirm)
+      if (!this.isSigningUp && this.email && this.password) {
+        // console.error('login is unimplemented');
+        this.btnIsLoading = true;
+
+        let poolData = {
+          UserPoolId: 'us-east-1_zw36Y5Lit',
+          ClientId: '5o54dn7u30p0mmstn4orljlip5',
+        };
+        let userPool = new CognitoUserPool(poolData);
+        let cognitoUser = new CognitoUser({
+          Username: this.email,
+          Pool: userPool,
+        });
+
+        let authDetails = new AuthenticationDetails({
+          Username: this.email,
+          Password: this.password
+        })
+
+        cognitoUser.authenticateUser(authDetails, {
+          onSuccess: result => {
+            console.log("SUCCESS!");
+            console.debug(result);
+          },
+          onFailure: error => {
+            console.log("ERROR!");
+            console.log(error);
+          }
+        });
+
+        this.btnIsLoading = false;
+
+      } else if (
+        this.isSigningUp &&
+        this.email &&
+        this.password &&
+        this.passwordConfirm
       ) {
         this.btnIsLoading = true;
 
-        axios
-          .post(this.apiAuthTokenUrl, {
-            email: this.email,
-            password: this.password,
-          })
-          .then((response) => {
-            if (response.status === 200) {
-              this.btnIsLoading = false;
-              this.setAuthToken({ token: response.data.token });
-              this.setLoginState({ state: true });
-              // console.log(this.$store.state.isLoggedIn)
-              this.$router.replace('/');
-            }
-          })
-          .catch((error) => {
-            if (!error.status && error.message === 'Network Error') {
-              this.btnIsLoading = false;
-              this.btnMessage = 'NETWORK OR API ERROR';
-            } else if (error.response && error.response.status === 400) {
-              this.btnIsLoading = false;
-              this.btnMessage = 'INVALID CREDENTIALS';
-            } else if (
-              error.response &&
-              error.response.status > 400 &&
-              error.response.status <= 599
-            ) {
-              this.btnIsLoading = false;
-              this.btnMessage = 'API ERROR';
-            } else {
-              this.btnIsLoading = false;
-              this.btnMessage = 'ERROR';
+        let poolData = {
+          UserPoolId: 'us-east-1_zw36Y5Lit',
+          ClientId: '5o54dn7u30p0mmstn4orljlip5',
+        };
 
-              // TODO: Remove debug info
-              console.info(error.message);
-            }
-          });
+        let userPool = new CognitoUserPool(poolData);
+
+        userPool.signUp(this.email, this.password, null, null, (err, res) => {
+          if (err) {
+            console.log('callback error: ' + err);
+          }
+          let user = res.user;
+          this.setUser({ user: user });
+          console.log('username: ' + user.getUsername());
+          this.btnIsLoading = false;
+        });
+        // axios
+        //   .post(this.apiAuthTokenUrl, {
+        //     email: this.email,
+        //     password: this.password,
+        //   })
+        //   .then((response) => {
+        //     if (response.status === 200) {
+        //       this.btnIsLoading = false;
+        //       this.setAuthToken({ token: response.data.token });
+        //       this.setLoginState({ state: true });
+        //       // console.log(this.$store.state.isLoggedIn)
+        //       this.$router.replace('/');
+        //     }
+        //   })
+        //   .catch((error) => {
+        //     if (!error.status && error.message === 'Network Error') {
+        //       this.btnIsLoading = false;
+        //       this.btnMessage = 'NETWORK OR API ERROR';
+        //     } else if (error.response && error.response.status === 400) {
+        //       this.btnIsLoading = false;
+        //       this.btnMessage = 'INVALID CREDENTIALS';
+        //     } else if (
+        //       error.response &&
+        //       error.response.status > 400 &&
+        //       error.response.status <= 599
+        //     ) {
+        //       this.btnIsLoading = false;
+        //       this.btnMessage = 'API ERROR';
+        //     } else {
+        //       this.btnIsLoading = false;
+        //       this.btnMessage = 'ERROR';
+
+        //       // TODO: Remove debug info
+        //       console.info(error.message);
+        //     }
+        //   });
       } else {
         let fields = ['email', 'password'];
         if (this.isSigningUp) fields.push('password-confirm');
@@ -194,7 +246,7 @@ export default {
     },
 
     // map vuex Mutations
-    ...mapMutations(['setAuthToken']),
+    ...mapMutations(['setUser']),
   },
 };
 </script>
