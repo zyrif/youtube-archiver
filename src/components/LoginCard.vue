@@ -85,10 +85,13 @@ export default {
         email: (value) =>
           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
             value
-          ) || 'Email must be valid',
+          ) || 'Must be a valid email address',
         password: (value) =>
-          (value.length >= 6 && value.length <= 32) ||
-          'Password must be at least 6 characters and at most 32 characters',
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\^$*.[\]{}()?\-"!@#%&/\\,><':;|_~`+=])[A-Za-z\d^$*.[\]{}()?\-"!@#%&/\\,><':;|_~`+=]{8,}$/.test(
+            value
+          ) ||
+          'Must have at least 8 characters including at least 1 number, 1 special character, 1 lowercase letter and 1 uppercase letter',
+        confirmPassword: (value) => (value === this.password) || 'Passwords don\'t match'
       },
     };
   },
