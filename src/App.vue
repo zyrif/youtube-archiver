@@ -15,7 +15,7 @@
     <v-main>
       <router-view />
       <v-dialog v-model="showLoginDialog" max-width="460px">
-        <login />
+        <login @closeLoginDialog="showLoginDialog = false" />
       </v-dialog>
     </v-main>
   </v-app>
