@@ -5,18 +5,19 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    // authToken: '',
+    authToken: '',
+    // TODO: Move this into environment variables
     cognitoData: {
-      UserPoolId: 'us-east-1_Nq7fxv1tA',
-      ClientId: '5op2o50bkjf58itl0866ua082b'
+      UserPoolId: 'us-east-1_zw36Y5Lit',
+      ClientId: '5o54dn7u30p0mmstn4orljlip5'
     },
     user: null,                  // aws cognito user
     apiUrl: 'https://api.tectronus.com/yttracker'
   },
   getters: {
-    // authToken (state) {
-    //   return state.authToken
-    // }
+    authToken (state) {
+      return state.authToken
+    },
     cognitoData (state) {
       return state.cognitoData
     },
@@ -25,9 +26,9 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    // setAuthToken (state, payload) {
-    //   state.authToken = payload.token
-    // },
+    setAuthToken (state, payload) {
+      state.authToken = payload.token
+    },
     setUser (state, payload) {
       state.user = payload.user
     }

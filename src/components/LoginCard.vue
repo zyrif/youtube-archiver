@@ -1,63 +1,65 @@
 <template>
-  <v-card class="elevation-2" min-width="360px" max-width="460px">
-    <v-toolbar color="grey lighten-2" flat>
-      <v-toolbar-title>
-        {{ isSigningUp ? 'Sign Up' : 'Log In' }}
-      </v-toolbar-title>
-      <v-spacer />
-      <v-btn text @click="toggleForm">
-        {{ isSigningUp ? 'Log In' : 'Sign Up' }}
-      </v-btn>
-    </v-toolbar>
-    <v-card-text>
-      <v-form>
-        <v-text-field
-          ref="email"
-          v-model="email"
-          :rules="[rules.required, rules.email]"
-          label="Email"
-          type="email"
-          outlined
-        />
-
-        <v-text-field
-          ref="password"
-          v-model="password"
-          :rules="[rules.required, rules.password]"
-          label="Password"
-          type="password"
-          outlined
-          v-on:keydown="clickLoginBtn"
-        />
-
-        <v-text-field
-          v-if="isSigningUp"
-          ref="password-confirm"
-          v-model="passwordConfirm"
-          :rules="[rules.required, rules.password]"
-          label="Confirm Password"
-          type="password"
-          outlined
-          v-on:keydown="clickSignupBtn"
-        ></v-text-field>
-      </v-form>
-    </v-card-text>
-    <v-card-actions>
-      <v-spacer />
-      <v-btn
-        ref="actionBtn"
-        class="mb-2 white--text"
-        depressed
-        block
-        large
-        v-bind="btnOptions"
-        v-on:click="doAuthAction"
-      >
-        {{ btnMessage }}
-      </v-btn>
-      <v-spacer />
-    </v-card-actions>
-  </v-card>
+  <div style="display: contents">
+    <v-card class="elevation-2" min-width="360px" max-width="460px">
+      <v-toolbar color="grey lighten-2" flat>
+        <v-toolbar-title>
+          {{ isSigningUp ? 'Sign Up' : 'Log In' }}
+        </v-toolbar-title>
+        <v-spacer />
+        <v-btn text @click="toggleForm">
+          {{ isSigningUp ? 'Log In' : 'Sign Up' }}
+        </v-btn>
+      </v-toolbar>
+      <v-card-text>
+        <v-form>
+          <v-text-field
+            ref="email"
+            v-model="email"
+            :rules="[rules.required, rules.email]"
+            label="Email"
+            type="email"
+            outlined
+          />
+          <v-text-field
+            ref="password"
+            v-model="password"
+            :rules="isSigningUp ? [rules.required, rules.password] : [rules.required]"
+            label="Password"
+            type="password"
+            outlined
+            v-on:keydown="clickLoginBtn"
+          />
+          <v-text-field
+            v-if="isSigningUp"
+            ref="password-confirm"
+            v-model="passwordConfirm"
+            :rules="[rules.required, rules.confirmPassword]"
+            label="Confirm Password"
+            type="password"
+            outlined
+            v-on:keydown="clickSignupBtn"
+          ></v-text-field>
+        </v-form>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn
+          ref="actionBtn"
+          class="mb-2 white--text"
+          depressed
+          block
+          large
+          v-bind="btnOptions"
+          v-on:click="doAuthAction"
+        >
+          {{ btnMessage }}
+        </v-btn>
+        <v-spacer />
+      </v-card-actions>
+    </v-card>
+    <error-dialog ref="refAuthErrorDialog"></error-dialog>
+    <input-dialog ref="refAuthInputDialog"></input-dialog>
+  </div>
 </template>
 
 <script>
@@ -66,7 +68,11 @@ import { AuthenticationDetails, CognitoUser, CognitoUserPool } from 'amazon-cogn
 
 import { mapGetters, mapMutations } from 'vuex';
 
+import ErrorDialog from './ErrorDialog.vue';
+import InputDialog from './InputDialog.vue';
+
 export default {
+  components: { ErrorDialog, InputDialog },
   data() {
     return {
       isSigningUp: false,
@@ -127,7 +133,7 @@ export default {
     },
 
     // map vuex getters
-    ...mapGetters(['user']),
+    ...mapGetters(['user', 'cognitoData']),
   },
   mounted: function () {
     //
@@ -138,14 +144,9 @@ export default {
     },
     doAuthAction() {
       if (!this.isSigningUp && this.email && this.password) {
-        // console.error('login is unimplemented');
         this.btnIsLoading = true;
 
-        let poolData = {
-          UserPoolId: 'us-east-1_zw36Y5Lit',
-          ClientId: '5o54dn7u30p0mmstn4orljlip5',
-        };
-        let userPool = new CognitoUserPool(poolData);
+        let userPool = new CognitoUserPool(this.cognitoData);
         let cognitoUser = new CognitoUser({
           Username: this.email,
           Pool: userPool,
@@ -154,20 +155,59 @@ export default {
         let authDetails = new AuthenticationDetails({
           Username: this.email,
           Password: this.password
-        })
+        });
 
         cognitoUser.authenticateUser(authDetails, {
           onSuccess: result => {
-            console.log("SUCCESS!");
-            console.debug(result);
+            this.setAuthToken({ token: result.getIdToken().getJwtToken()});
+            this.setUser({ user: result.getIdToken().payload });
+            this.btnIsLoading = false;
+            this.email = this.password = '';
+            this.$emit('closeLoginDialog');
           },
           onFailure: error => {
-            console.log("ERROR!");
-            console.log(error);
+            if (error.code === 'UserNotConfirmedException') {
+              this.$refs.refAuthInputDialog.open(
+                {
+                  title: 'Confirm your email',
+                  label: 'Verification Code',
+                  hint: 'Enter the code sent to your email address here',
+                }
+              ).then((result) => {
+                if (result) {
+                  this.btnIsLoading = true;
+                  cognitoUser.confirmRegistration(result, true, (error) => {
+                    if (error) {
+                      this.$refs.refAuthErrorDialog.open({
+                        errorTitle: 'Failed to confirm your email!',
+                        errorMsg: `Reason: ${error.message}`,
+                      });
+                      this.btnIsLoading = false;
+                    } else {
+                      this.btnIsLoading = false;
+                      this.doAuthAction();
+                      return;
+                    }
+                  });
+                }
+              });
+            } else if (error.code === 'ResourceNotFoundException') {
+              this.$refs.refAuthErrorDialog.open({
+                errorTitle: 'Oops! We messed up',
+                errorMsg: 'Seems like an app error has occured, which is likely our fault. Please contact the administrator and let them know so that we can fix it asap',
+              }).then(() => {
+                this.$emit('closeLoginDialog');
+              });
+            } else {
+              this.$refs.refAuthErrorDialog.open({
+                errorTitle: 'Failed to log you in!',
+                errorMsg: `Reason: ${error.message}`,
+              })
+            }
+            this.btnIsLoading = false;
           }
         });
 
-        this.btnIsLoading = false;
 
       } else if (
         this.isSigningUp &&
@@ -177,58 +217,21 @@ export default {
       ) {
         this.btnIsLoading = true;
 
-        let poolData = {
-          UserPoolId: 'us-east-1_zw36Y5Lit',
-          ClientId: '5o54dn7u30p0mmstn4orljlip5',
-        };
-
-        let userPool = new CognitoUserPool(poolData);
-
-        userPool.signUp(this.email, this.password, null, null, (err, res) => {
+        let userPool = new CognitoUserPool(this.cognitoData);
+        userPool.signUp(this.email, this.password, null, null, (err) => {
           if (err) {
-            console.log('callback error: ' + err);
+            this.$refs.refAuthErrorDialog.open({
+              errorTitle: 'Your Signup Request Failed!',
+              errorMsg: `Reason: ${err.message}`,
+              actionable: false,
+            });
+          } else {
+            this.isSigningUp = false;
+            this.doAuthAction();
+            return;
           }
-          let user = res.user;
-          this.setUser({ user: user });
-          console.log('username: ' + user.getUsername());
           this.btnIsLoading = false;
         });
-        // axios
-        //   .post(this.apiAuthTokenUrl, {
-        //     email: this.email,
-        //     password: this.password,
-        //   })
-        //   .then((response) => {
-        //     if (response.status === 200) {
-        //       this.btnIsLoading = false;
-        //       this.setAuthToken({ token: response.data.token });
-        //       this.setLoginState({ state: true });
-        //       // console.log(this.$store.state.isLoggedIn)
-        //       this.$router.replace('/');
-        //     }
-        //   })
-        //   .catch((error) => {
-        //     if (!error.status && error.message === 'Network Error') {
-        //       this.btnIsLoading = false;
-        //       this.btnMessage = 'NETWORK OR API ERROR';
-        //     } else if (error.response && error.response.status === 400) {
-        //       this.btnIsLoading = false;
-        //       this.btnMessage = 'INVALID CREDENTIALS';
-        //     } else if (
-        //       error.response &&
-        //       error.response.status > 400 &&
-        //       error.response.status <= 599
-        //     ) {
-        //       this.btnIsLoading = false;
-        //       this.btnMessage = 'API ERROR';
-        //     } else {
-        //       this.btnIsLoading = false;
-        //       this.btnMessage = 'ERROR';
-
-        //       // TODO: Remove debug info
-        //       console.info(error.message);
-        //     }
-        //   });
       } else {
         let fields = ['email', 'password'];
         if (this.isSigningUp) fields.push('password-confirm');
@@ -249,7 +252,7 @@ export default {
     },
 
     // map vuex Mutations
-    ...mapMutations(['setUser']),
+    ...mapMutations(['setUser', 'setAuthToken']),
   },
 };
 </script>
