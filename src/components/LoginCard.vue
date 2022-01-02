@@ -23,7 +23,9 @@
           <v-text-field
             ref="password"
             v-model="password"
-            :rules="isSigningUp ? [rules.required, rules.password] : [rules.required]"
+            :rules="
+              isSigningUp ? [rules.required, rules.password] : [rules.required]
+            "
             label="Password"
             type="password"
             outlined
@@ -63,8 +65,11 @@
 </template>
 
 <script>
-// import axios from 'axios';
-import { AuthenticationDetails, CognitoUser, CognitoUserPool } from 'amazon-cognito-identity-js';
+import {
+  AuthenticationDetails,
+  CognitoUser,
+  CognitoUserPool,
+} from 'amazon-cognito-identity-js';
 
 import { mapGetters, mapMutations } from 'vuex';
 
@@ -97,7 +102,8 @@ export default {
             value
           ) ||
           'Must have at least 8 characters including at least 1 number, 1 special character, 1 lowercase letter and 1 uppercase letter',
-        confirmPassword: (value) => (value === this.password) || 'Passwords don\'t match'
+        confirmPassword: (value) =>
+          value === this.password || "Passwords don't match",
       },
     };
   },
@@ -154,61 +160,62 @@ export default {
 
         let authDetails = new AuthenticationDetails({
           Username: this.email,
-          Password: this.password
+          Password: this.password,
         });
 
         cognitoUser.authenticateUser(authDetails, {
-          onSuccess: result => {
-            this.setAuthToken({ token: result.getIdToken().getJwtToken()});
+          onSuccess: (result) => {
+            this.setAuthToken({ token: result.getIdToken().getJwtToken() });
             this.setUser({ user: result.getIdToken().payload });
             this.btnIsLoading = false;
             this.email = this.password = '';
             this.$emit('closeLoginDialog');
           },
-          onFailure: error => {
+          onFailure: (error) => {
             if (error.code === 'UserNotConfirmedException') {
-              this.$refs.refAuthInputDialog.open(
-                {
+              this.$refs.refAuthInputDialog
+                .open({
                   title: 'Confirm your email',
                   label: 'Verification Code',
                   hint: 'Enter the code sent to your email address here',
-                }
-              ).then((result) => {
-                if (result) {
-                  this.btnIsLoading = true;
-                  cognitoUser.confirmRegistration(result, true, (error) => {
-                    if (error) {
-                      this.$refs.refAuthErrorDialog.open({
-                        errorTitle: 'Failed to confirm your email!',
-                        errorMsg: `Reason: ${error.message}`,
-                      });
-                      this.btnIsLoading = false;
-                    } else {
-                      this.btnIsLoading = false;
-                      this.doAuthAction();
-                      return;
-                    }
-                  });
-                }
-              });
+                })
+                .then((result) => {
+                  if (result) {
+                    this.btnIsLoading = true;
+                    cognitoUser.confirmRegistration(result, true, (error) => {
+                      if (error) {
+                        this.$refs.refAuthErrorDialog.open({
+                          errorTitle: 'Failed to confirm your email!',
+                          errorMsg: `Reason: ${error.message}`,
+                        });
+                        this.btnIsLoading = false;
+                      } else {
+                        this.btnIsLoading = false;
+                        this.doAuthAction();
+                        return;
+                      }
+                    });
+                  }
+                });
             } else if (error.code === 'ResourceNotFoundException') {
-              this.$refs.refAuthErrorDialog.open({
-                errorTitle: 'Oops! We messed up',
-                errorMsg: 'Seems like an app error has occured, which is likely our fault. Please contact the administrator and let them know so that we can fix it asap',
-              }).then(() => {
-                this.$emit('closeLoginDialog');
-              });
+              this.$refs.refAuthErrorDialog
+                .open({
+                  errorTitle: 'Oops! We messed up',
+                  errorMsg:
+                    'Seems like an app error has occured, which is likely our fault. Please contact the administrator and let them know so that we can fix it asap',
+                })
+                .then(() => {
+                  this.$emit('closeLoginDialog');
+                });
             } else {
               this.$refs.refAuthErrorDialog.open({
                 errorTitle: 'Failed to log you in!',
                 errorMsg: `Reason: ${error.message}`,
-              })
+              });
             }
             this.btnIsLoading = false;
-          }
+          },
         });
-
-
       } else if (
         this.isSigningUp &&
         this.email &&
