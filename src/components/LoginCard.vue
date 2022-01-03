@@ -65,13 +65,7 @@
 </template>
 
 <script>
-import {
-  AuthenticationDetails,
-  CognitoUser,
-  CognitoUserPool,
-} from 'amazon-cognito-identity-js';
-
-import { mapGetters, mapMutations } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 import ErrorDialog from './ErrorDialog.vue';
 import InputDialog from './InputDialog.vue';
@@ -139,7 +133,7 @@ export default {
     },
 
     // map vuex getters
-    ...mapGetters(['user', 'cognitoData']),
+    ...mapGetters([]),
   },
   mounted: function () {
     //
@@ -152,26 +146,17 @@ export default {
       if (!this.isSigningUp && this.email && this.password) {
         this.btnIsLoading = true;
 
-        let userPool = new CognitoUserPool(this.cognitoData);
-        let cognitoUser = new CognitoUser({
-          Username: this.email,
-          Pool: userPool,
-        });
-
-        let authDetails = new AuthenticationDetails({
-          Username: this.email,
-          Password: this.password,
-        });
-
-        cognitoUser.authenticateUser(authDetails, {
-          onSuccess: (result) => {
-            this.setAuthToken({ token: result.getIdToken().getJwtToken() });
-            this.setUser({ user: result.getIdToken().payload });
+        let payload = {
+          authData: {
+            email: this.email,
+            password: this.password,
+          },
+          successCallback: () => {
             this.btnIsLoading = false;
             this.email = this.password = '';
             this.$emit('closeLoginDialog');
           },
-          onFailure: (error) => {
+          errorCallback: (error) => {
             if (error.code === 'UserNotConfirmedException') {
               this.$refs.refAuthInputDialog
                 .open({
@@ -182,18 +167,20 @@ export default {
                 .then((result) => {
                   if (result) {
                     this.btnIsLoading = true;
-                    cognitoUser.confirmRegistration(result, true, (error) => {
-                      if (error) {
-                        this.$refs.refAuthErrorDialog.open({
-                          errorTitle: 'Failed to confirm your email!',
-                          errorMsg: `Reason: ${error.message}`,
-                        });
-                        this.btnIsLoading = false;
-                      } else {
-                        this.btnIsLoading = false;
-                        this.doAuthAction();
-                        return;
-                      }
+                    this.confirmRegistration({
+                      code: result,
+                      resultCallback: (error) => {
+                        if (error) {
+                          this.$refs.refAuthErrorDialog.open({
+                            errorTitle: 'Failed to confirm your email!',
+                            errorMsg: `Reason: ${error.message}`,
+                          });
+                          this.btnIsLoading = false;
+                        } else {
+                          this.btnIsLoading = false;
+                          this.doAuthAction();
+                        }
+                      },
                     });
                   }
                 });
@@ -215,7 +202,9 @@ export default {
             }
             this.btnIsLoading = false;
           },
-        });
+        };
+
+        this.authenticateUser(payload);
       } else if (
         this.isSigningUp &&
         this.email &&
@@ -224,20 +213,22 @@ export default {
       ) {
         this.btnIsLoading = true;
 
-        let userPool = new CognitoUserPool(this.cognitoData);
-        userPool.signUp(this.email, this.password, null, null, (err) => {
-          if (err) {
-            this.$refs.refAuthErrorDialog.open({
-              errorTitle: 'Your Signup Request Failed!',
-              errorMsg: `Reason: ${err.message}`,
-              actionable: false,
-            });
-          } else {
-            this.isSigningUp = false;
-            this.doAuthAction();
-            return;
-          }
-          this.btnIsLoading = false;
+        this.signUp({
+          email: this.email,
+          password: this.password,
+          resultCallback: (err) => {
+            if (err) {
+              this.$refs.refAuthErrorDialog.open({
+                errorTitle: 'Your Signup Request Failed!',
+                errorMsg: `Reason: ${err.message}`,
+                actionable: false,
+              });
+            } else {
+              this.isSigningUp = false;
+              this.doAuthAction();
+            }
+            this.btnIsLoading = false;
+          },
         });
       } else {
         let fields = ['email', 'password'];
@@ -258,8 +249,8 @@ export default {
       }
     },
 
-    // map vuex Mutations
-    ...mapMutations(['setUser', 'setAuthToken']),
+    // map vuex actions
+    ...mapActions(['authenticateUser', 'confirmRegistration', 'signUp']),
   },
 };
 </script>
