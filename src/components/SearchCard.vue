@@ -369,8 +369,8 @@ export default {
               };
             } else {
               e = {
-                errorTitle: 'Avast!',
-                errorMsg: `It seems like we're doing something wrong on this side. Server replied with error: ${error.response.data.message}`,
+                errorTitle: 'Your Request Failed!',
+                errorMsg: `Reason: ${error.response.data.errorMessage}`,
                 actionable: true,
               };
             }
@@ -380,7 +380,7 @@ export default {
           ) {
             e = {
               errorTitle: 'Blast!',
-              errorMsg: `It seems like the server fell over. It replied with: ${error.response.data.message}`,
+              errorMsg: `It seems like the server fell over. It replied with: ${error.response.data.errorMessage}`,
               actionable: true,
             };
           } else {
