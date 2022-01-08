@@ -53,7 +53,10 @@ export default new Vuex.Store({
       context.commit('setUser', authData)
 
       context.state.cognitoUser.authenticateUser(authDetails, {
-        onSuccess: successCallback,
+        onSuccess: (result) => {
+          this._vm.$axios.defaults.headers.common['Authorization'] = result.getIdToken().getJwtToken()
+          successCallback(result)
+        },
         onFailure: errorCallback,
       })
     },
@@ -64,7 +67,10 @@ export default new Vuex.Store({
       context.state.cognitoUserPool.signUp(email, password, null, null, resultCallback )
     },
     signOut (context, resultCallback) {
-      context.state.cognitoUser.signOut(resultCallback)
+      context.state.cognitoUser.signOut((error) => {
+        this._vm.$axios.defaults.headers.common['Authorization'] = ''
+        resultCallback(error)
+      })
     }
   },
   modules: {
