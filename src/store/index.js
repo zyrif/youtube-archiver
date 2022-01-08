@@ -19,6 +19,9 @@ export default new Vuex.Store({
     cognitoUser: null,
   },
   getters: {
+    isLoggedIn (state, getters) {
+      return getters.accessToken !== '' ? true : false
+    },
     idToken (state) {
       if (!state.cognitoUser || !state.cognitoUser.getSignInUserSession()) {
         return ''
@@ -59,6 +62,9 @@ export default new Vuex.Store({
     },
     signUp (context, { email, password , resultCallback }) {
       context.state.cognitoUserPool.signUp(email, password, null, null, resultCallback )
+    },
+    signOut (context, resultCallback) {
+      context.state.cognitoUser.signOut(resultCallback)
     }
   },
   modules: {

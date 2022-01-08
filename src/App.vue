@@ -6,39 +6,63 @@
         <span class="red--text">Tube</span>Tracker
       </div>
       <v-spacer />
-      <v-btn text @click.stop="showLoginDialog = true">
+      <v-btn v-if="!isLoggedIn" text @click.stop="showLoginDialog = true">
         <v-icon left>fas fa-sign-in-alt</v-icon>
         Log In
+      </v-btn>
+      <v-btn v-else text @click="logoutHandler()">
+        <v-icon left>fas fa-sign-out-alt</v-icon>
+        Log Out
       </v-btn>
     </v-app-bar>
 
     <v-main>
       <router-view />
       <v-dialog v-model="showLoginDialog" max-width="460px">
-        <login @closeLoginDialog="showLoginDialog = false" />
+        <login-dialog @closeLoginDialog="showLoginDialog = false" />
       </v-dialog>
+      <error-dialog ref="refAuthErrorDialog"></error-dialog>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import Login from './components/LoginCard.vue';
+import { mapActions, mapGetters } from 'vuex';
+import LoginDialog from './components/LoginCard.vue';
+import ErrorDialog from './components/ErrorDialog.vue';
 
 export default {
   name: 'App',
 
   components: {
-    Login,
+    LoginDialog,
+    ErrorDialog,
   },
 
   data: () => ({
     showLoginDialog: false,
   }),
 
+  computed: {
+    ...mapGetters(['isLoggedIn']),
+  },
+
   methods: {
     titleHandler: function () {
       this.$router.push('/');
     },
+    logoutHandler: function () {
+      this.signOut((error) => {
+        if (!error) {
+          return;
+        }
+        this.$refs.refAuthErrorDialog.open({
+          errorTitle: 'Failed to log you out properly!',
+          errorMsg: `Reason: ${error.message}`
+        });
+      });
+    },
+    ...mapActions(['signOut']),
   },
 };
 </script>
