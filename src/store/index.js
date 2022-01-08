@@ -13,8 +13,8 @@ export default new Vuex.Store({
 
     // TODO: Move IDs into environment variables
     cognitoUserPool: new CognitoUserPool({
-        UserPoolId: 'us-east-1_zw36Y5Lit',
-        ClientId: '5o54dn7u30p0mmstn4orljlip5'
+        UserPoolId: 'us-east-1_FyylEMoPZ',
+        ClientId: '6f22i7vfekvlut67n7t2b94suj'
     }),
     cognitoUser: null,
   },
