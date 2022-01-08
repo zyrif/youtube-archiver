@@ -119,7 +119,6 @@
 
 <script>
 import ErrorDialog from './ErrorDialog.vue';
-import axios from 'axios';
 import { debounce } from '../utils/helpers';
 export default {
   components: { ErrorDialog },
@@ -332,9 +331,8 @@ export default {
       this.usedHints = [];
     },
     fetchResult: function () {
-      let url = 'https://api.tectronus.com/yttracker/pl-metadata';
-      axios
-        .get(url, {
+      this.$axios
+        .get('pl-metadata', {
           params: {
             id: this.playlistUrl.listID,
           },
