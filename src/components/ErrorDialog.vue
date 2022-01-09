@@ -16,7 +16,7 @@
         <v-spacer />
         <div v-if="dialogActionable" style="display: contents">
           <v-btn color="grey darken-1" text v-on:click="no()"> Cancel </v-btn>
-          <v-btn color="blue darken-1" text v-on:click="yes()"> Retry </v-btn>
+          <v-btn color="blue darken-1" text v-on:click="yes()"> {{ dialogActionBtnText }} </v-btn>
         </div>
         <div v-else style="display: contents">
           <v-btn color="blue darken-1" text v-on:click="no()"> Okay </v-btn>
@@ -33,12 +33,18 @@ export default {
     actionable: {
       type: Boolean,
       default: false,
-    }
+    },
+    actionBtnText: {
+      type: String,
+      default: 'Retry',
+    },
   },
   data() {
     return {
       dialog: false,
       dialogActionable: this.actionable,
+      dialogActionBtnText: this.actionBtnText,
+
       options: {
         width: 400,
         zIndex: 200,
@@ -60,6 +66,9 @@ export default {
       }
       if ('actionable' in this.options) {
         this.dialogActionable = this.options.actionable;
+      }
+      if ('actionBtnText' in this.options) {
+        this.dialogActionBtnText = this.options.actionBtnText;
       }
       return new Promise((resolve, reject) => {
         this.resolve = resolve;
