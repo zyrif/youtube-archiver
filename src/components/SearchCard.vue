@@ -222,6 +222,9 @@ export default {
       this.playlistInfo.title = '';
       this.resultCard = false;
     },
+    openLoginDialog: function () {
+      this.$store.commit('setLoginDialogVisibility', { value: true })
+    },
     checkPlaylistUrl: function (url) {
       let re =
         /\b(?<protocol>[https]{4,5})?(?::\/\/)?\b(?<subdomain>www|m)?(?:.)?\b(?<domain>youtube\.com)?\b(?:\/playlist\?list=)?\b(?<playlistid>[-a-zA-Z0-9()_]{18,34})\b/;
@@ -349,6 +352,7 @@ export default {
         })
         .catch((error) => {
           let e;
+          let callable = this.fetchResult;
           if (!error.status && error.message === 'Network Error') {
             e = {
               errorTitle: 'We can\'t communicate with the server!',
@@ -363,8 +367,13 @@ export default {
               e = {
                 errorTitle: 'We need to know who you are!',
                 errorMsg: 'To perform this action, please let us know who you are by Logging In.',
-                actionable: false,
+                actionable: true,
+                actionBtnText: 'Log In',
               };
+              callable = () => {
+                this.resetHandler();
+                this.openLoginDialog();
+              }
             } else {
               e = {
                 errorTitle: 'Your Request Failed!',
@@ -393,7 +402,7 @@ export default {
             .open(e)
             .then((result) => {
               if (result) {
-                this.fetchResult();
+                callable();
               } else {
                 this.resetHandler();
               }
