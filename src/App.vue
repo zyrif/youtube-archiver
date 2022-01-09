@@ -39,11 +39,15 @@ export default {
     ErrorDialog,
   },
 
-  data: () => ({
-    showLoginDialog: false,
-  }),
-
   computed: {
+    showLoginDialog: {
+      get: function () {
+        return this.$store.getters.isLoginDialogVisible;
+      },
+      set: function (value) {
+        this.$store.commit('setLoginDialogVisibility', { value })
+      },
+    },
     ...mapGetters(['isLoggedIn']),
   },
 
