@@ -14,7 +14,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <div v-if="actionable" style="display: contents">
+        <div v-if="dialogActionable" style="display: contents">
           <v-btn color="grey darken-1" text v-on:click="no()"> Cancel </v-btn>
           <v-btn color="blue darken-1" text v-on:click="yes()"> Retry </v-btn>
         </div>
@@ -38,6 +38,7 @@ export default {
   data() {
     return {
       dialog: false,
+      dialogActionable: this.actionable,
       options: {
         width: 400,
         zIndex: 200,
@@ -58,7 +59,7 @@ export default {
         this.options["errorMsg"] = 'An error occured';
       }
       if ('actionable' in this.options) {
-        this.actionable = this.options.actionable;
+        this.dialogActionable = this.options.actionable;
       }
       return new Promise((resolve, reject) => {
         this.resolve = resolve;
