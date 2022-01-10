@@ -15,9 +15,12 @@
         />
       </v-card-text>
       <v-card-actions>
+        <slot name="left-card-actions"></slot>
         <v-spacer />
-        <v-btn color="grey darken-1" text v-on:click="cancel()"> Cancel </v-btn>
-        <v-btn color="blue darken-1" text v-on:click="submit()"> Submit </v-btn>
+        <slot name="right-card-actions">
+          <v-btn color="grey darken-1" text v-on:click="cancel()"> Cancel </v-btn>
+          <v-btn color="blue darken-1" text v-on:click="submit()"> Submit </v-btn>
+        </slot>
       </v-card-actions>
     </v-card>
   </v-dialog>
