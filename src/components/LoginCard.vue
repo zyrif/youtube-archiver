@@ -60,7 +60,26 @@
       </v-card-actions>
     </v-card>
     <error-dialog ref="refAuthErrorDialog"></error-dialog>
-    <input-dialog ref="refAuthInputDialog"></input-dialog>
+    <input-dialog ref="refAuthInputDialog">
+      <template v-slot:left-card-actions>
+        <v-btn
+          v-if="resendCodeThrottleCounter === 0"
+          color="green lighten-1"
+          text
+          @click="resendCode()"
+        >
+          Resend
+        </v-btn>
+        <v-progress-circular
+          v-else
+          :rotate="-90"
+          :size="24"
+          :value="resendCodeProgressValue"
+          :width="3"
+          color="orange"
+        />
+      </template>
+    </input-dialog>
   </div>
 </template>
 
@@ -75,6 +94,7 @@ export default {
   data() {
     return {
       isSigningUp: false,
+      resendCodeThrottleCounter: 0,
 
       email: '',
       password: '',
@@ -130,6 +150,13 @@ export default {
         outlined: this.btnColor === this.btnDefaultColor,
       };
       return options;
+    },
+    resendCodeThrottleTimeout() {
+      // TODO: gradually increase timeout value on each invocation
+      return 30;
+    },
+    resendCodeProgressValue() {
+      return (100 * this.resendCodeThrottleCounter) / this.resendCodeThrottleTimeout;
     },
 
     // map vuex getters
@@ -248,9 +275,42 @@ export default {
         this.$refs.actionBtn.$el.click();
       }
     },
+    resendCode() {
+      if (this.resendCodeThrottleCounter !== 0) {
+        throw new Error(
+          'Invalid State: Resend code button should not be visible now'
+        );
+      }
+
+      this.resendConfirmationCode((err, res) => {
+        if (err) {
+          this.$refs.refAuthErrorDialog.open({
+            errorTitle: 'Request to Resend Confirmation Code Failed!',
+            errorMsg: `Reason: ${err.message}`,
+            actionable: false,
+          });
+        } else {
+          console.log(res);
+
+          this.resendCodeThrottleCounter = this.resendCodeThrottleTimeout;
+          const f = () => {
+            if (this.resendCodeThrottleCounter > 0) {
+              this.resendCodeThrottleCounter -= 1;
+              setTimeout(f, 1000);
+            }
+          };
+          setTimeout(f, 1000);
+        }
+      });
+    },
 
     // map vuex actions
-    ...mapActions(['authenticateUser', 'confirmRegistration', 'signUp']),
+    ...mapActions([
+      'authenticateUser',
+      'confirmRegistration',
+      'resendConfirmationCode',
+      'signUp',
+    ]),
   },
 };
 </script>
@@ -258,5 +318,9 @@ export default {
 <style scoped>
 .v-dialog > .v-card > .v-card__text {
   padding: 20px 24px 12px;
+}
+
+.v-progress-circular {
+  margin-left: 1.5rem;
 }
 </style>

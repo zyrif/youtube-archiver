@@ -56,6 +56,9 @@ const actions = {
   confirmRegistration(context, { code, resultCallback }) {
     context.state.cognitoUser.confirmRegistration(code, true, resultCallback)
   },
+  resendConfirmationCode(context, resultCallback) {
+    context.state.cognitoUser.resendConfirmationCode(resultCallback)
+  },
   signUp(context, { email, password, resultCallback }) {
     context.state.cognitoUserPool.signUp(email, password, null, null, resultCallback)
   },
