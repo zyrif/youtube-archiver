@@ -72,6 +72,7 @@
         </v-btn>
         <v-progress-circular
           v-else
+          :indeterminate="resendCodeThrottleCounter === -1"
           :rotate="-90"
           :size="24"
           :value="resendCodeProgressValue"
@@ -282,16 +283,18 @@ export default {
         );
       }
 
-      this.resendConfirmationCode((err, res) => {
+      // place the resend button into a loading state immediately
+      this.resendCodeThrottleCounter = -1
+      this.resendConfirmationCode((err) => {
+        // we're not receiving `result` in parameter since we don't need it
         if (err) {
+          this.resendCodeThrottleTimeout = 0;
           this.$refs.refAuthErrorDialog.open({
             errorTitle: 'Request to Resend Confirmation Code Failed!',
             errorMsg: `Reason: ${err.message}`,
             actionable: false,
           });
         } else {
-          console.log(res);
-
           this.resendCodeThrottleCounter = this.resendCodeThrottleTimeout;
           const f = () => {
             if (this.resendCodeThrottleCounter > 0) {
