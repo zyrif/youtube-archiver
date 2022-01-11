@@ -25,6 +25,9 @@ const getters = {
     }
     return state.cognitoUser.getSignInUserSession().getAccessToken().getJwtToken()
   },
+  userEmail(state, getters) {
+    return getters.isLoggedIn ? state.cognitoUser.getSignInUserSession().getIdToken().payload.email : 'N/A';
+  }
 }
 
 const mutations = {

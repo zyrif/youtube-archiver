@@ -10,10 +10,13 @@
         <v-icon left>fas fa-sign-in-alt</v-icon>
         Log In
       </v-btn>
-      <v-btn v-else text @click="logoutHandler()">
-        <v-icon left>fas fa-sign-out-alt</v-icon>
-        Log Out
-      </v-btn>
+      <div v-else style="display: contents">
+        <span> {{ userEmail }} </span>
+        <v-btn text @click="logoutHandler()">
+          <v-icon left>fas fa-sign-out-alt</v-icon>
+          Log Out
+        </v-btn>
+      </div>
     </v-app-bar>
 
     <v-main>
@@ -48,7 +51,7 @@ export default {
         this.$store.commit('setLoginDialogVisibility', { value })
       },
     },
-    ...mapGetters(['isLoggedIn']),
+    ...mapGetters(['isLoggedIn', 'userEmail']),
   },
 
   methods: {
