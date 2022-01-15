@@ -31,22 +31,40 @@ const getters = {
 }
 
 const mutations = {
-  setUser(state, { email }) {
-    state.cognitoUser = new CognitoUser({
-      Username: email,
-      Pool: state.cognitoUserPool,
-    })
+  setCognitoUser(state, cognitoUser) {
+    if (!(cognitoUser instanceof CognitoUser)) {
+      throw new Error('Vuex Auth: Invalid Argument passed to setCognitoUser()')
+    }
+    state.cognitoUser = cognitoUser
   },
 }
 
 const actions = {
+  restoreLastUserSession(context) {
+    if (context.state.cognitoUser !== null) {
+      return
+    }
+
+    const cognitoUser = context.state.cognitoUserPool.getCurrentUser()
+    if (cognitoUser === null) {
+      return
+    }
+
+    context.commit('setCognitoUser', cognitoUser)
+
+    // TODO: Maybe use a snackbar for error message?
+    context.state.cognitoUser.getSession(() => {})
+  },
   authenticateUser(context, { authData, successCallback, errorCallback }) {
     let authDetails = new AuthenticationDetails({
       Username: authData.email,
       Password: authData.password,
     })
 
-    context.commit('setUser', authData)
+    context.commit('setCognitoUser', new CognitoUser({
+      Username: authData.email,
+      Pool: context.state.cognitoUserPool,
+    }))
 
     context.state.cognitoUser.authenticateUser(authDetails, {
       onSuccess: (result) => {

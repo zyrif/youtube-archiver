@@ -42,6 +42,10 @@ export default {
     ErrorDialog,
   },
 
+  created: function () {
+    this.restoreLastUserSession();
+  },
+
   computed: {
     showLoginDialog: {
       get: function () {
@@ -69,7 +73,7 @@ export default {
         });
       });
     },
-    ...mapActions(['signOut']),
+    ...mapActions(['restoreLastUserSession', 'signOut']),
   },
 };
 </script>
