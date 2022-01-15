@@ -52,7 +52,7 @@ export default {
         return this.$store.getters.isLoginDialogVisible;
       },
       set: function (value) {
-        this.$store.commit('setLoginDialogVisibility', { value })
+        this.$store.commit('setLoginDialogVisibility', { value });
       },
     },
     ...mapGetters(['isLoggedIn', 'userEmail']),
@@ -69,7 +69,7 @@ export default {
         }
         this.$refs.refAuthErrorDialog.open({
           errorTitle: 'Failed to log you out properly!',
-          errorMsg: `Reason: ${error.message}`
+          errorMsg: `Reason: ${error.message}`,
         });
       });
     },
