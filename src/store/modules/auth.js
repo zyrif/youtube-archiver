@@ -53,7 +53,14 @@ const actions = {
     context.commit('setCognitoUser', cognitoUser)
 
     // TODO: Maybe use a snackbar for error message?
-    context.state.cognitoUser.getSession(() => {})
+    context.state.cognitoUser.getSession((error, session) => {
+      if (error) {
+        console.error("session restore failed")
+        console.log(error)
+      } else {
+        this._vm.$axios.defaults.headers.common['Authorization'] = session.getIdToken().getJwtToken()
+      }
+    })
   },
   authenticateUser(context, { authData, successCallback, errorCallback }) {
     let authDetails = new AuthenticationDetails({
