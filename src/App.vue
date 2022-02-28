@@ -11,7 +11,7 @@
         Log In
       </v-btn>
       <div v-else style="display: contents">
-        <span> {{ userEmail }} </span>
+        <span style="cursor: pointer;" @click="profileHandler()"> {{ userEmail }} </span>
         <v-btn text @click="logoutHandler()">
           <v-icon left>fas fa-sign-out-alt</v-icon>
           Log Out
@@ -61,6 +61,9 @@ export default {
   methods: {
     titleHandler: function () {
       this.$router.push('/');
+    },
+    profileHandler: function () {
+      this.$router.push('/playlists');
     },
     logoutHandler: function () {
       this.signOut((error) => {
