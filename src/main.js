@@ -9,7 +9,7 @@ Vue.config.productionTip = false
 
 // Make axios available in Vue instance
 Vue.prototype.$axios = Axios.create({
-  baseURL: 'https://api.tectronus.com/yttracker/',
+  baseURL: 'https://api.tectronus.com/yttracker',
 })
 
 new Vue({

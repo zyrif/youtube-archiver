@@ -335,7 +335,7 @@ export default {
     },
     fetchResult: function () {
       this.$axios
-        .get('pl-metadata', {
+        .get('/pl-metadata/', {
           params: {
             id: this.playlistUrl.listID,
           },
