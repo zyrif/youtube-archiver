@@ -215,7 +215,24 @@ export default {
   },
   methods: {
     trackHandler: function () {
-      this.$router.push('/playlists');
+      const payload = new URLSearchParams();
+      payload.append('playlist_id', this.playlistUrl.listID);
+      this.$axios
+        .post('/playlists/', payload)
+        .then((response) => {
+          console.log(response);
+          if (response.status >= 200 && response.status <= 299) {
+            this.$router.push('/playlists');
+          } else {
+            // TODO: show error dialog
+            console.error('some error occured: non 200 response received');
+          }
+        })
+        .catch((error) => {
+          // TODO: show error dialog
+          console.error('some error occured sending request');
+          console.log(error);
+        });
     },
     resetHandler: function () {
       // TODO: also cancel any pending axios request
