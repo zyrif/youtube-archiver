@@ -224,7 +224,7 @@ export default {
       this.resultCard = false;
     },
     openLoginDialog: function () {
-      this.$store.commit('setLoginDialogVisibility', { value: true })
+      this.$store.commit('setLoginDialogVisibility', { value: true });
     },
     checkPlaylistUrl: function (url) {
       let re =
@@ -357,8 +357,9 @@ export default {
           let callable = this.fetchResult;
           if (!error.status && error.message === 'Network Error') {
             e = {
-              errorTitle: 'We can\'t communicate with the server!',
-              errorMsg: 'Either internet is unavailable or the API server itself is on fire.',
+              errorTitle: "We can't communicate with the server!",
+              errorMsg:
+                'Either internet is unavailable or the API server itself is on fire.',
               actionable: true,
             };
           } else if (
@@ -368,14 +369,15 @@ export default {
             if (error.response.status === 401) {
               e = {
                 errorTitle: 'We need to know who you are!',
-                errorMsg: 'To perform this action, please let us know who you are by Logging In.',
+                errorMsg:
+                  'To perform this action, please let us know who you are by Logging In.',
                 actionable: true,
                 actionBtnText: 'Log In',
               };
               callable = () => {
                 this.resetHandler();
                 this.openLoginDialog();
-              }
+              };
             } else {
               e = {
                 errorTitle: 'Your Request Failed!',
@@ -395,20 +397,19 @@ export default {
           } else {
             e = {
               errorTitle: 'Oh Noes!',
-              errorMsg: 'An Unexpected Error Occured. Your best bet is to contact us and let us know what\'s going on.',
+              errorMsg:
+                "An Unexpected Error Occured. Your best bet is to contact us and let us know what's going on.",
               actionable: false,
             };
           }
 
-          this.$refs.refSearchErrorDialog
-            .open(e)
-            .then((result) => {
-              if (result) {
-                callable();
-              } else {
-                this.resetHandler();
-              }
-            });
+          this.$refs.refSearchErrorDialog.open(e).then((result) => {
+            if (result) {
+              callable();
+            } else {
+              this.resetHandler();
+            }
+          });
         });
     },
   },
