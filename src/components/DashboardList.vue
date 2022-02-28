@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-hover v-for="item in items" :key="item.id" v-slot="{ hover }">
+    <v-hover v-for="item in items" :key="item['playlist_id']" v-slot="{ hover }">
       <dashboard-list-item
         :hover="hover"
         :item="item"

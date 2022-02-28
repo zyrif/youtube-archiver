@@ -45,7 +45,7 @@
         >
           <v-row class="mx-1" align="center" justify="start">
             <p class="text-subtitle-1">
-              {{ playlistInfo.channel }}
+              {{ playlistInfo.uploader }}
             </p>
           </v-row>
         </v-skeleton-loader>
@@ -142,8 +142,9 @@ export default {
     hintPositions: {},
 
     playlistInfo: {
+      playlistId: '',
       title: '',
-      channel: '',
+      uploader: '',
       numOfVideo: '',
       numOfView: '',
       lastUpdated: '',
@@ -342,12 +343,13 @@ export default {
         })
         .then((response) => {
           if (response.status === 200) {
+            this.playlistInfo.playlistId = response.data['playlist_id'];
             this.playlistInfo.title = response.data['title'];
             this.playlistInfo.description = response.data['description'];
             this.playlistInfo.numOfVideo = response.data['num_of_videos'];
             this.playlistInfo.numOfView = response.data['views'];
             this.playlistInfo.lastUpdated = response.data['last_updated'];
-            this.playlistInfo.channel = response.data['uploader'];
+            this.playlistInfo.uploader = response.data['uploader'];
           }
         })
         .catch((error) => {

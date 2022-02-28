@@ -4,30 +4,37 @@
     :class="hover ? 'red elevation-2' : 'grey lighten-2 elevation-0'"
     :ripple="false"
     width="100%"
-    @click="$emit('playlist-selected', item.id)"
+    @click="$emit('playlist-selected', item['playlist_id'])"
   >
-    <v-card-title>{{ item.title }} </v-card-title>
+    <v-card-title>{{ item['title'] }} </v-card-title>
     <v-card-text>
       <v-row class="mx-1" align="center" justify="start">
         <p class="text-subtitle-2">
-          {{ item.channel }}
+          {{ item['uploader'] }}
         </p>
       </v-row>
       <v-row class="mx-1" align="center" justify="start">
         <p class="text-subtitle-2">
           Available Videos:
-          {{ item.numOfVideos }}
+          {{ item['num_of_videos'] }}
         </p>
       </v-row>
       <v-row class="mx-1" align="center" justify="start">
         <p class="text-subtitle-2">
           Tracked Videos:
-          {{ item.numOfVideosTracked }}
+          {{ item['num_of_videos'] }}
         </p>
       </v-row>
-      <v-row class="mx-1" align="end" justify="end">
+      <v-row class="mx-1" align="center" justify="start">
         <p class="text-subtitle-2">
-          {{ item.lastChecked }}
+          Total Views:
+          {{ item['views'] }}
+        </p>
+      </v-row>
+      <v-row class="mx-1" align="end" justify="start">
+        <p class="text-subtitle-2">
+          Last Updated:
+          {{ item['last_updated'] }}
         </p>
       </v-row>
     </v-card-text>
