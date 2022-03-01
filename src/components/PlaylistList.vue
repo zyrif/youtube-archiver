@@ -19,26 +19,15 @@
 import PlaylistListItem from './PlaylistListItem.vue';
 export default {
   components: { PlaylistListItem },
-    mounted: function () {
-    if (this.playlists.length < 1) {
-      this.$axios
-        .get('/playlists/')
-        .then((response) => {
-          if (response.status === 200) {
-            if (Array.isArray(response.data)) {
-              this.playlists = response.data
-            } else {
-              // TODO: Better error alerting
-              console.error("Expected array from from /playlists/ api response data")
-              console.log(response.data)
-            }
-          }
-        })
-        .catch((error) => {
-          console.error('Error while fetching playlists');
-          console.log(error);
-        });
-    }
+  mounted: function () {
+    this.$store
+      .dispatch('fetchPlaylists')
+      .then((items) => {
+        this.playlists = items;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   },
   data: () => ({
     playlists: [],
