@@ -1,44 +1,31 @@
 <template>
   <v-container>
     <v-breadcrumbs :items="breadcrumbs" />
-    <v-row>
-      <p class="text-h3 ma-2">Playlists</p>
-    </v-row>
-    <dashboard-list :items="playlists" />
+    <keep-alive>
+      <component :is="currentComponent" />
+    </keep-alive>
   </v-container>
 </template>
 
 <script>
-import DashboardList from '../components/DashboardList.vue';
+import PlaylistList from '../components/PlaylistList.vue';
+import VideoList from '../components/VideoList.vue';
 export default {
-  components: { DashboardList },
-  mounted: function () {
-    if (this.playlists.length < 1) {
-      this.$axios
-        .get('/playlists/')
-        .then((response) => {
-          if (response.status === 200) {
-            if (Array.isArray(response.data)) {
-              this.playlists = response.data
-            } else {
-              // TODO: Better error alerting
-              console.error("Expected array from from /playlists/ api response data")
-              console.log(response.data)
-            }
-          }
-        })
-        .catch((error) => {
-          console.error('Error while fetching playlists');
-          console.log(error);
-        });
-    }
-  },
-  data: () => ({
-    playlists: [],
-  }),
+  components: { PlaylistList, VideoList },
   computed: {
     breadcrumbs: function () {
       return this.$route.meta.breadCrumbs;
+    },
+    currentComponent: function () {
+      switch (this.$route.name) {
+        case 'Playlists':
+          return 'PlaylistList';
+        case 'Videos':
+          return 'VideoList';
+        default:
+          // TODO: add a proper 404 component here
+          return 'PlaylistList';
+      }
     },
   },
 };

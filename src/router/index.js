@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Landing from '../views/Landing.vue'
 import Dashboard from '../views/Dashboard.vue'
-import Playlist from '../views/Playlist.vue'
 
 Vue.use(VueRouter)
 
@@ -33,7 +32,7 @@ const routes = [
   {
     path: '/playlist/:id',
     name: 'Videos',
-    component: Playlist,
+    component: Dashboard,
     meta: {
       breadCrumbs: [
         {

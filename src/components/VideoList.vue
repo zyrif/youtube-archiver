@@ -1,19 +1,25 @@
 <template>
-  <v-container>
-    <v-breadcrumbs :items="breadcrumbs" />
+  <div style="display: contents">
     <v-row>
       <p class="text-h3 ma-2">Videos</p>
     </v-row>
-    <playlist-list :videos="videos" />
-  </v-container>
+    <video-list-pagination :items="videos">
+      <template v-slot:default="{ item }">
+        <v-hover v-slot="{ hover }">
+          <video-list-item :hover="hover" :item="item" />
+        </v-hover>
+      </template>
+    </video-list-pagination>
+  </div>
 </template>
 
 <script>
-import PlaylistList from '../components/PlaylistList.vue';
+import VideoListItem from './VideoListItem.vue';
+import VideoListPagination from './Pagination.vue';
 export default {
-  components: { PlaylistList },
-  data: () => ({
-    videos: [
+  components: { VideoListItem, VideoListPagination },
+  mounted: function () {
+    this.videos = [
       {
         title: 'Levitating Barbecue! Electromagnetic Induction',
         channel: 'Veritasium',
@@ -25,7 +31,7 @@ export default {
         videoID: 'txmKr69jGBk',
       },
       {
-        title: 'What\'s In A Candle Flame?',
+        title: "What's In A Candle Flame?",
         channel: 'Veritasium',
         dateUploaded: 'Sep 12, 2012',
         duration: '3:45',
@@ -174,21 +180,13 @@ export default {
         dislikes: '280',
         videoID: 'txmKr69jGBk',
       },
-    ],
+    ];
+  },
+  data: () => ({
+    videos: [],
   }),
-  computed: {
-    breadcrumbs: function () {
-      return this.$route.meta.breadCrumbs;
-    }
-  }
 };
 </script>
 
-<style scoped>
-.v-breadcrumbs {
-  padding-left: 0 !important;
-}
-.v-breadcrumbs {
-  padding-left: 0 !important;
-}
+<style>
 </style>
