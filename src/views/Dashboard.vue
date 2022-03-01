@@ -1,9 +1,7 @@
 <template>
   <v-container>
     <v-breadcrumbs :items="breadcrumbs" />
-    <keep-alive>
-      <component :is="currentComponent" />
-    </keep-alive>
+    <component :is="currentComponent" />
   </v-container>
 </template>
 
