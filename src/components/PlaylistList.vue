@@ -1,10 +1,14 @@
 <template>
-  <div style="display: contents;">
+  <div style="display: contents">
     <v-row>
       <p class="text-h3 ma-2">Playlists</p>
     </v-row>
     <v-row>
-      <v-hover v-for="item in playlists" :key="item['playlist_id']" v-slot="{ hover }">
+      <v-hover
+        v-for="item in playlists"
+        :key="item['playlist_id']"
+        v-slot="{ hover }"
+      >
         <playlist-list-item
           :hover="hover"
           :item="item"
