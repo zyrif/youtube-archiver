@@ -24,6 +24,7 @@ import PlaylistListItem from './PlaylistListItem.vue';
 export default {
   components: { PlaylistListItem },
   mounted: function () {
+    this.$store.commit('setLoadingDialogVisibility', { value: true });
     this.$store
       .dispatch('fetchPlaylists')
       .then((items) => {
@@ -31,6 +32,9 @@ export default {
       })
       .catch((error) => {
         console.error(error);
+      })
+      .finally(() => {
+        this.$store.commit('setLoadingDialogVisibility', { value: false });
       });
   },
   data: () => ({
