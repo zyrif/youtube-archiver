@@ -37,6 +37,9 @@ const mutations = {
     }
     state.cognitoUser = cognitoUser
   },
+  clearCognitoUser(state) {
+    state.cognitoUser = null
+  }
 }
 
 const actions = {
@@ -55,8 +58,9 @@ const actions = {
     // TODO: Maybe use a snackbar for error message?
     context.state.cognitoUser.getSession((error, session) => {
       if (error) {
-        console.error("session restore failed")
         console.log(error)
+        console.error('Session restore failed. Setting cognitoUser to null')
+        context.commit('clearCognitoUser')
       } else {
         this._vm.$axios.defaults.headers.common['Authorization'] = session.getIdToken().getJwtToken()
       }
