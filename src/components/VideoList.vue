@@ -19,6 +19,7 @@ import VideoListPagination from './Pagination.vue';
 export default {
   components: { VideoListItem, VideoListPagination },
   mounted: function () {
+    this.$store.commit('setLoadingDialogVisibility', { value: true });
     this.$store
       .dispatch('fetchVideos', this.$route.params.id)
       .then((videos) => {
@@ -27,6 +28,9 @@ export default {
       .catch((error) => {
         console.log(error)
         window.alert(error)
+      })
+      .finally(() => {
+        this.$store.commit('setLoadingDialogVisibility', { value: false });
       });
   },
   data: () => ({
