@@ -46,7 +46,12 @@ export default {
   },
 
   created: function () {
-    this.restoreLastUserSession();
+    this.restoreLastUserSession().catch((error) => {
+      console.debug(error);
+      if (this.$route.name !== 'Home') {
+        this.$router.replace('/');
+      }
+    });
   },
 
   computed: {
