@@ -44,27 +44,30 @@ const mutations = {
 
 const actions = {
   restoreLastUserSession(context) {
-    if (context.state.cognitoUser !== null) {
-      return
-    }
-
-    const cognitoUser = context.state.cognitoUserPool.getCurrentUser()
-    if (cognitoUser === null) {
-      return
-    }
-
-    context.commit('setCognitoUser', cognitoUser)
-
-    // TODO: Maybe use a snackbar for error message?
-    context.state.cognitoUser.getSession((error, session) => {
-      if (error) {
-        console.log(error)
-        console.error('Session restore failed. Setting cognitoUser to null')
-        context.commit('clearCognitoUser')
-      } else {
-        this._vm.$axios.defaults.headers.common['Authorization'] = session.getIdToken().getJwtToken()
+    return new Promise((resolve, reject) => {
+      if (context.state.cognitoUser !== null) {
+        return resolve(context.state.cognitoUser)
       }
+
+      const cognitoUser = context.state.cognitoUserPool.getCurrentUser()
+      if (cognitoUser === null) {
+        return reject(new Error('Failed to get last logged in user. Please Reauthenticate.'))
+      }
+
+      context.commit('setCognitoUser', cognitoUser)
+
+      // TODO: Maybe use a snackbar for error message?
+      context.state.cognitoUser.getSession((error, session) => {
+        if (error) {
+          context.commit('clearCognitoUser')
+          reject(error)
+        } else {
+          this._vm.$axios.defaults.headers.common['Authorization'] = session.getIdToken().getJwtToken()
+          resolve(context.state.cognitoUser)
+        }
+      })
     })
+
   },
   authenticateUser(context, { authData, successCallback, errorCallback }) {
     let authDetails = new AuthenticationDetails({
