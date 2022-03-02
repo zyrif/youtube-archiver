@@ -71,6 +71,9 @@ export default {
     logoutHandler: function () {
       this.signOut((error) => {
         if (!error) {
+          if (this.$route.name !== 'Home') {
+            this.$router.replace('/');
+          }
           return;
         }
         this.$refs.refAuthErrorDialog.open({
