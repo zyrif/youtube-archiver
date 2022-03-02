@@ -25,6 +25,7 @@
         <login-dialog @closeLoginDialog="showLoginDialog = false" />
       </v-dialog>
       <error-dialog ref="refAuthErrorDialog"></error-dialog>
+      <loading-dialog></loading-dialog>
     </v-main>
   </v-app>
 </template>
@@ -33,6 +34,7 @@
 import { mapActions, mapGetters } from 'vuex';
 import LoginDialog from './components/LoginCard.vue';
 import ErrorDialog from './components/ErrorDialog.vue';
+import LoadingDialog from './components/LoadingDialog.vue';
 
 export default {
   name: 'App',
@@ -40,6 +42,7 @@ export default {
   components: {
     LoginDialog,
     ErrorDialog,
+    LoadingDialog,
   },
 
   created: function () {
