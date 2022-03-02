@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <slot v-for="item in getPaginatedItems" :item="item"></slot>
-    <v-col class="text-center" cols="12">
+    <v-col v-if="itemsNotEmpty" class="text-center" cols="12">
       <v-btn fab small @click="prevPage()">
         <v-icon> fas fa-angle-left </v-icon>
       </v-btn>
@@ -16,12 +16,15 @@
 <script>
 import { drop } from 'lodash';
 export default {
-  props: ['items'],
+  props: { items: Array },
   data: () => ({
     page: 1,
     pageSize: 4,
   }),
   computed: {
+    itemsNotEmpty: function () {
+      return this.items.length > 0;
+    },
     totalPages: function () {
       return !this.items.length
         ? 1
