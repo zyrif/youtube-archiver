@@ -14,14 +14,18 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <div v-if="options.dialogActionable" style="display: contents">
-          <v-btn color="grey darken-1" text v-on:click="no()"> Cancel </v-btn>
+        <div v-if="options.actionable" style="display: contents">
+          <v-btn color="grey darken-1" text v-on:click="no()">
+            {{ options.cancelBtnText }}
+          </v-btn>
           <v-btn color="blue darken-1" text v-on:click="yes()">
-            {{ options.dialogActionBtnText }}
+            {{ options.actionBtnText }}
           </v-btn>
         </div>
         <div v-else style="display: contents">
-          <v-btn color="blue darken-1" text v-on:click="no()"> Okay </v-btn>
+          <v-btn color="blue darken-1" text v-on:click="no()">
+            {{ options.defaultBtnText }}
+          </v-btn>
         </div>
       </v-card-actions>
     </v-card>
@@ -50,8 +54,10 @@ export default {
         zIndex: 200,
         errorTitle: 'Avast!',
         errorMsg: 'An error has occured',
-        dialogActionable: this.actionable,
-        dialogActionBtnText: this.actionBtnText,
+        defaultBtnText: 'Okay',
+        actionable: this.actionable,
+        actionBtnText: this.actionBtnText,
+        cancelBtnText: 'Cancel',
       },
 
       resolve: null,
