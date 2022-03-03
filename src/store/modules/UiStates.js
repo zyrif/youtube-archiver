@@ -1,6 +1,7 @@
 const state = () => ({
     showLoginDialog: false,
     showLoadingDialog: false,
+    loginButtonLoadingState: false,
 })
 
 const getters = {
@@ -10,6 +11,9 @@ const getters = {
     isLoadingDialogVisible(state) {
         return state.showLoadingDialog
     },
+    isLoginButtonLoading (state) {
+        return state.loginButtonLoadingState
+    },
 }
 
 const mutations = {
@@ -18,6 +22,9 @@ const mutations = {
     },
     setLoadingDialogVisibility(state, { value }) {
         state.showLoadingDialog = value
+    },
+    setLoginButtonLoadingState(state, { value }) {
+        state.loginButtonLoadingState = value
     },
 }
 

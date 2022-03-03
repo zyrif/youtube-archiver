@@ -6,7 +6,12 @@
         <span class="red--text">Tube</span>Tracker
       </div>
       <v-spacer />
-      <v-btn v-if="!isLoggedIn" text @click.stop="showLoginDialog = true">
+      <v-btn
+        v-if="!isLoggedIn"
+        :loading="isLoginButtonLoading"
+        text
+        @click.stop="showLoginDialog = true"
+      >
         <v-icon left>fas fa-sign-in-alt</v-icon>
         Log In
       </v-btn>
@@ -31,7 +36,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 import LoginDialog from './components/LoginCard.vue';
 import ErrorDialog from './components/ErrorDialog.vue';
 import LoadingDialog from './components/LoadingDialog.vue';
@@ -63,7 +68,7 @@ export default {
         this.$store.commit('setLoginDialogVisibility', { value });
       },
     },
-    ...mapGetters(['isLoggedIn', 'userEmail']),
+    ...mapGetters(['isLoggedIn', 'userEmail', 'isLoginButtonLoading']),
   },
 
   methods: {
@@ -87,6 +92,7 @@ export default {
         });
       });
     },
+    ...mapMutations(['setLoginButtonLoadingState']),
     ...mapActions(['restoreLastUserSession', 'signOut']),
   },
 };
