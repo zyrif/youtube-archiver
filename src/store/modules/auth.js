@@ -10,20 +10,23 @@ const state = () => ({
 })
 
 const getters = {
-  isLoggedIn(state, getters) {
-    return getters.accessToken !== '' ? true : false
-  },
-  idToken(state) {
-    if (!state.cognitoUser || !state.cognitoUser.getSignInUserSession()) {
-      return ''
+  isLoggedIn(state) {
+    if (!state.cognitoUser) {
+      return false
     }
-    return state.cognitoUser.getSignInUserSession().getIdToken().getJwtToken()
-  },
-  accessToken(state) {
-    if (!state.cognitoUser || !state.cognitoUser.getSignInUserSession()) {
-      return ''
+
+    const session = state.cognitoUser.getSignInUserSession()
+    if (!(session && session.isValid())) {
+      return false
     }
-    return state.cognitoUser.getSignInUserSession().getAccessToken().getJwtToken()
+
+    return true
+  },
+  idToken(state, getters) {
+    return getters.isLoggedIn ? state.cognitoUser.getSignInUserSession().getIdToken().getJwtToken() : ''
+  },
+  accessToken(state, getters) {
+    return getters.isLoggedIn ? state.cognitoUser.getSignInUserSession().getAccessToken().getJwtToken() : ''
   },
   userEmail(state, getters) {
     return getters.isLoggedIn ? state.cognitoUser.getSignInUserSession().getIdToken().payload.email : 'N/A';
@@ -62,6 +65,7 @@ const actions = {
           context.commit('clearCognitoUser')
           reject(error)
         } else {
+          // TODO: Configure backend to use Access Token instead of ID Token
           this._vm.$axios.defaults.headers.common['Authorization'] = session.getIdToken().getJwtToken()
           resolve(context.state.cognitoUser)
         }
@@ -82,6 +86,7 @@ const actions = {
 
     context.state.cognitoUser.authenticateUser(authDetails, {
       onSuccess: (result) => {
+        // TODO: Configure backend to use Access Token instead of ID Token
         this._vm.$axios.defaults.headers.common['Authorization'] = result.getIdToken().getJwtToken()
         successCallback(result)
       },
