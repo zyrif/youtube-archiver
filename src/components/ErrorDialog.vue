@@ -14,9 +14,11 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <div v-if="dialogActionable" style="display: contents">
+        <div v-if="options.dialogActionable" style="display: contents">
           <v-btn color="grey darken-1" text v-on:click="no()"> Cancel </v-btn>
-          <v-btn color="blue darken-1" text v-on:click="yes()"> {{ dialogActionBtnText }} </v-btn>
+          <v-btn color="blue darken-1" text v-on:click="yes()">
+            {{ options.dialogActionBtnText }}
+          </v-btn>
         </div>
         <div v-else style="display: contents">
           <v-btn color="blue darken-1" text v-on:click="no()"> Okay </v-btn>
@@ -29,7 +31,7 @@
 <script>
 export default {
   name: 'ErrorDialog',
-  props:{
+  props: {
     actionable: {
       type: Boolean,
       default: false,
@@ -42,12 +44,14 @@ export default {
   data() {
     return {
       dialog: false,
-      dialogActionable: this.actionable,
-      dialogActionBtnText: this.actionBtnText,
 
       options: {
         width: 400,
         zIndex: 200,
+        errorTitle: 'Avast!',
+        errorMsg: 'An error has occured',
+        dialogActionable: this.actionable,
+        dialogActionBtnText: this.actionBtnText,
       },
 
       resolve: null,
@@ -58,18 +62,7 @@ export default {
     open(options) {
       this.dialog = true;
       this.options = Object.assign(this.options, options);
-      if (!('errorTitle' in this.options)) {
-        this.options["errorTitle"] = 'Generic Error';
-      }
-      if (!('errorMsg' in this.options)) {
-        this.options["errorMsg"] = 'An error occured';
-      }
-      if ('actionable' in this.options) {
-        this.dialogActionable = this.options.actionable;
-      }
-      if ('actionBtnText' in this.options) {
-        this.dialogActionBtnText = this.options.actionBtnText;
-      }
+
       return new Promise((resolve, reject) => {
         this.resolve = resolve;
         this.reject = reject;
