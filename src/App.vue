@@ -51,12 +51,17 @@ export default {
   },
 
   created: function () {
-    this.restoreLastUserSession().catch((error) => {
-      console.debug(error);
-      if (this.$route.name !== 'Home') {
-        this.$router.replace('/');
-      }
-    });
+    this.setLoginButtonLoadingState({ value: true });
+    this.restoreLastUserSession()
+      .catch((error) => {
+        console.debug(error);
+        if (this.$route.name !== 'Home') {
+          this.$router.replace('/');
+        }
+      })
+      .finally(() => {
+        this.setLoginButtonLoadingState({ value: false });
+      });
   },
 
   computed: {
