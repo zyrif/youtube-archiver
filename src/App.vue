@@ -31,7 +31,7 @@
       <v-dialog v-model="showLoginDialog" max-width="460px">
         <login-dialog @closeLoginDialog="showLoginDialog = false" />
       </v-dialog>
-      <error-dialog ref="refAuthErrorDialog"></error-dialog>
+      <error-dialog ref="refErrorDialog"></error-dialog>
       <loading-dialog></loading-dialog>
     </v-main>
   </v-app>
@@ -66,6 +66,10 @@ export default {
       });
   },
 
+  mounted: function () {
+    this.setErrorDialogRef({ value: this.$refs.refErrorDialog });
+  },
+
   computed: {
     showLoginDialog: {
       get: function () {
@@ -75,7 +79,12 @@ export default {
         this.$store.commit('setLoginDialogVisibility', { value });
       },
     },
-    ...mapGetters(['isLoggedIn', 'userEmail', 'isLoginButtonLoading']),
+    ...mapGetters([
+      'isLoggedIn',
+      'userEmail',
+      'isLoginButtonLoading',
+      'getErrorDialogRef',
+    ]),
   },
 
   methods: {
@@ -95,13 +104,13 @@ export default {
           }
           return;
         }
-        this.$refs.refAuthErrorDialog.open({
+        this.$refs.refErrorDialog.open({
           errorTitle: 'Failed to log you out properly!',
           errorMsg: `Reason: ${error.message}`,
         });
       });
     },
-    ...mapMutations(['setLoginButtonLoadingState']),
+    ...mapMutations(['setLoginButtonLoadingState', 'setErrorDialogRef']),
     ...mapActions(['restoreLastUserSession', 'signOut']),
   },
 };

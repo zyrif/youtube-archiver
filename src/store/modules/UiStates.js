@@ -2,6 +2,7 @@ const state = () => ({
     showLoginDialog: false,
     showLoadingDialog: false,
     loginButtonLoadingState: false,
+    errorDialogRef: null,
 })
 
 const getters = {
@@ -11,8 +12,14 @@ const getters = {
     isLoadingDialogVisible(state) {
         return state.showLoadingDialog
     },
-    isLoginButtonLoading (state) {
+    isLoginButtonLoading(state) {
         return state.loginButtonLoadingState
+    },
+    getErrorDialogRef(state) {
+        if (!state.errorDialogRef) {
+            throw new Error("errorDialogRef has not been set yet")
+        }
+        return state.errorDialogRef
     },
 }
 
@@ -25,6 +32,9 @@ const mutations = {
     },
     setLoginButtonLoadingState(state, { value }) {
         state.loginButtonLoadingState = value
+    },
+    setErrorDialogRef(state, { value }) {
+        state.errorDialogRef = value
     },
 }
 
