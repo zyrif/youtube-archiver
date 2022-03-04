@@ -65,8 +65,7 @@ const actions = {
           context.commit('clearCognitoUser')
           reject(error)
         } else {
-          // TODO: Configure backend to use Access Token instead of ID Token
-          this._vm.$axios.defaults.headers.common['Authorization'] = session.getIdToken().getJwtToken()
+          this._vm.$axios.defaults.headers.common['Authorization'] = session.getAccessToken().getJwtToken()
           resolve(context.state.cognitoUser)
         }
       })
@@ -86,8 +85,7 @@ const actions = {
 
     context.state.cognitoUser.authenticateUser(authDetails, {
       onSuccess: (result) => {
-        // TODO: Configure backend to use Access Token instead of ID Token
-        this._vm.$axios.defaults.headers.common['Authorization'] = result.getIdToken().getJwtToken()
+        this._vm.$axios.defaults.headers.common['Authorization'] = result.getAccessToken().getJwtToken()
         successCallback(result)
       },
       onFailure: errorCallback,
