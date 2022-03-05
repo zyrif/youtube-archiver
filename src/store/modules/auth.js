@@ -11,25 +11,29 @@ const state = () => ({
 
 const getters = {
   isLoggedIn(state) {
-    if (!state.cognitoUser) {
-      return false
-    }
+    // Retuning a function to bypass vuex's getter caching
+    // Otherwise returns true evne if .isValid() is false
+    return () => {
+      if (!state.cognitoUser) {
+        return false
+      }
 
-    const session = state.cognitoUser.getSignInUserSession()
-    if (!(session && session.isValid())) {
-      return false
-    }
+      const session = state.cognitoUser.getSignInUserSession()
+      if (!(session && session.isValid())) {
+        return false
+      }
 
-    return true
+      return true
+    }
   },
   idToken(state, getters) {
-    return getters.isLoggedIn ? state.cognitoUser.getSignInUserSession().getIdToken().getJwtToken() : ''
+    return getters.isLoggedIn() ? state.cognitoUser.getSignInUserSession().getIdToken().getJwtToken() : ''
   },
   accessToken(state, getters) {
-    return getters.isLoggedIn ? state.cognitoUser.getSignInUserSession().getAccessToken().getJwtToken() : ''
+    return getters.isLoggedIn() ? state.cognitoUser.getSignInUserSession().getAccessToken().getJwtToken() : ''
   },
   userEmail(state, getters) {
-    return getters.isLoggedIn ? state.cognitoUser.getSignInUserSession().getIdToken().payload.email : 'N/A';
+    return getters.isLoggedIn() ? state.cognitoUser.getSignInUserSession().getIdToken().payload.email : 'N/A';
   }
 }
 

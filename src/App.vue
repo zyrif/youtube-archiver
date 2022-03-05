@@ -7,7 +7,7 @@
       </div>
       <v-spacer />
       <v-btn
-        v-if="!isLoggedIn"
+        v-if="!isLoggedIn()"
         :loading="isLoginButtonLoading"
         text
         @click.stop="showLoginDialog = true"
