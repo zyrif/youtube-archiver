@@ -19,23 +19,34 @@ import VideoListPagination from './Pagination.vue';
 export default {
   components: { VideoListItem, VideoListPagination },
   mounted: function () {
-    this.$store.commit('setLoadingDialogVisibility', { value: true });
-    this.$store
-      .dispatch('fetchVideos', this.$route.params.id)
-      .then((videos) => {
-        this.videos = videos;
-      })
-      .catch((error) => {
-        console.log(error)
-        window.alert(error)
-      })
-      .finally(() => {
-        this.$store.commit('setLoadingDialogVisibility', { value: false });
-      });
+    this.populateList();
   },
   data: () => ({
     videos: [],
   }),
+  methods: {
+    populateList: function () {
+      this.$store.commit('setLoadingDialogVisibility', { value: true });
+      this.$store
+        .dispatch('fetchVideos', this.$route.params.id)
+        .then((videos) => {
+          this.videos = videos;
+        })
+        .catch((error) => {
+          this.$store.getters.getErrorDialogRef
+            .open({
+              errorTitle: error.toJSON ? error.toJSON().name : error.name,
+              errorMsg: error.toJSON ? error.toJSON().message : error.message,
+            })
+            .then(() => {
+              this.$router.replace('/');
+            });
+        })
+        .finally(() => {
+          this.$store.commit('setLoadingDialogVisibility', { value: false });
+        });
+    },
+  },
 };
 </script>
 

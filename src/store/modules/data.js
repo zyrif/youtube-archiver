@@ -96,28 +96,40 @@ const actions = {
       if (videos.length > 0) {
         resolve(videos)
       } else {
-        axios
-          .get(`/playlists/${playlistId}`)
-          .then((response) => {
-            if (response.status === 200) {
-              context.commit('setVideos', { playlistId: playlistId, videos: response.data['videos'] })
-              setTimeout(() => {
-                context.commit('clearVideos', playlistId) 
-              }, 30 * 60 * 1000);
+        const httpCall = () => {
+          axios
+            .get(`/playlists/${playlistId}`)
+            .then((response) => {
+              if (response.status === 200) {
+                context.commit('setVideos', { playlistId: playlistId, videos: response.data['videos'] })
+                setTimeout(() => {
+                  context.commit('clearVideos', playlistId)
+                }, 30 * 60 * 1000);
 
-              resolve(context.getters.getVideos(playlistId))
-            } else {
-              // TODO: Better error reporting
-              console.error("non-200 response from /playlists/:id endpoint")
-              console.log(response)
-              reject(response)
-            }
-          })
-          .catch((error) => {
-            console.error('Error while fetching videos')
-            console.log(error)
-            reject(error)
-          })
+                resolve(context.getters.getVideos(playlistId))
+              } else {
+                reject(response)
+              }
+            })
+            .catch((error) => {
+              reject(error)
+            })
+        }
+
+        if (context.getters.isLoggedIn()) {
+          httpCall()
+        } else {
+          context.dispatch('setOrRefreshToken')
+            .then((cognitoUser) => {
+              console.debug('Called setOrRefreshToken')
+              console.debug(cognitoUser)
+              httpCall()
+            })
+            .catch((error) => {
+              console.debug('setOrRefreshToken encountered error')
+              reject(error)
+            })
+        }
       }
     })
 
