@@ -41,13 +41,15 @@ export default {
           this.playlists = items;
         })
         .catch((error) => {
+          const networkError = error.message === 'Network Error'
           this.$store.getters.getErrorDialogRef
             .open({
               errorTitle: error.toJSON ? error.toJSON().name : error.name,
               errorMsg: error.toJSON ? error.toJSON().message : error.message,
+              defaultBtnText: networkError ? 'Retry' : 'Okay',
             })
             .then(() => {
-              this.$router.replace('/')
+              networkError ? this.populateList() : this.$router.replace('/')
             });
         })
         .finally(() => {
