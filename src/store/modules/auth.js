@@ -52,6 +52,9 @@ const mutations = {
 const actions = {
   restoreLastUserSession(context) {
     return new Promise((resolve, reject) => {
+      // As this action is mainly intended to handle cold starts and page reloads
+      // we probably don't need to restore session if cognitoUser is already present
+      // since it'll be null in abovementioned situations
       if (context.state.cognitoUser !== null) {
         return resolve(context.state.cognitoUser)
       }
@@ -63,7 +66,26 @@ const actions = {
 
       context.commit('setCognitoUser', cognitoUser)
 
-      // TODO: Maybe use a snackbar for error message?
+      context.dispatch('setOrRefreshToken')
+        .then((cognitoUser) => {
+          resolve(cognitoUser)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+  setOrRefreshToken(context) {
+    // this action is intended to be called when Access Token is either not set
+    // or has expired and needs to be regenerated, so on session restore and 
+    // maybe before calling protected API methods
+    return new Promise((resolve, reject) => {
+      // therefore, don't handle scenarios where cognitoUser is null
+      if (context.state.cognitoUser === null) {
+        console.error("cognitoUser must not be null. Restore user session or authenticate first.")
+        return reject(new Error("Failed to generate access token. Please re-authenticate."))
+      }
+
       context.state.cognitoUser.getSession((error, session) => {
         if (error) {
           context.commit('clearCognitoUser')
@@ -74,7 +96,6 @@ const actions = {
         }
       })
     })
-
   },
   authenticateUser(context, { authData, successCallback, errorCallback }) {
     let authDetails = new AuthenticationDetails({
