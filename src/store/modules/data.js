@@ -48,29 +48,43 @@ const mutations = {
 }
 
 const actions = {
-  fetchPlaylists({ getters, commit }) {
+  fetchPlaylists({ getters, commit, dispatch }) {
     const axios = this._vm.$axios
     return new Promise((resolve, reject) => {
       if (getters.playlistsNotEmpty) {
         resolve(getters.getPlaylists)
       } else {
-        axios
-          .get('/playlists/')
-          .then((response) => {
-            if (response.status === 200) {
-              commit('setPlaylists', response.data)
-              setTimeout(() => {
-                commit('clearPlaylists')
-              }, 60 * 1000)
+        const httpCall = () => {
+          axios
+            .get('/playlists/')
+            .then((response) => {
+              if (response.status === 200) {
+                commit('setPlaylists', response.data)
+                setTimeout(() => {
+                  commit('clearPlaylists')
+                }, 60 * 1000)
 
-              resolve(getters.getPlaylists)
-            } else {
-              reject(response)
-            }
-          })
-          .catch((error) => {
-            reject(error)
-          })
+                resolve(getters.getPlaylists)
+              } else {
+                reject(response)
+              }
+            })
+            .catch((error) => {
+              reject(error)
+            })
+        }
+
+        if (getters.isLoggedIn()) {
+          httpCall()
+        } else {
+          dispatch('setOrRefreshToken')
+            .then(() => {
+              httpCall()
+            })
+            .catch((error) => {
+              reject(error)
+            })
+        }
       }
     })
   },

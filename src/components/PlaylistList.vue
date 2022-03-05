@@ -28,7 +28,6 @@ export default {
   },
   data: () => ({
     playlists: [],
-    retry: false,
   }),
   methods: {
     gotoPlaylist: function (id) {
@@ -42,43 +41,17 @@ export default {
           this.playlists = items;
         })
         .catch((error) => {
-          if (error.response) {
-            if (error.response.status === 401) {
-              this.retryOnce();
-            }
-          } else {
-            this.$store.getters.getErrorDialogRef
-              .open({
-                errorTitle: error.toJSON().name,
-                errorMsg: error.toJSON().message,
-                defaultBtnText: 'Retry',
-              })
-              .then(() => {
-                this.populateList();
-              });
-          }
-          console.debug(error);
+          this.$store.getters.getErrorDialogRef
+            .open({
+              errorTitle: error.toJSON ? error.toJSON().name : error.name,
+              errorMsg: error.toJSON ? error.toJSON().message : error.message,
+            })
+            .then(() => {
+              this.$router.replace('/')
+            });
         })
         .finally(() => {
           this.$store.commit('setLoadingDialogVisibility', { value: false });
-        });
-    },
-    retryOnce: function () {
-      if (this.retry) {
-        this.$store.getters.getErrorDialogRef.open({
-          errorTitle: 'Auth token has expired',
-          errorMsg: 'Please re-authenticate',
-        });
-        return;
-      }
-
-      this.$store
-        .dispatch('restoreLastUserSession')
-        .then(() => {
-          this.populateList();
-        })
-        .finally(() => {
-          this.retry = true;
         });
     },
   },
