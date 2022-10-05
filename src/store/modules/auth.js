@@ -80,10 +80,14 @@ const actions = {
     // or has expired and needs to be regenerated, so on session restore and 
     // maybe before calling protected API methods
     return new Promise((resolve, reject) => {
-      // therefore, don't handle scenarios where cognitoUser is null
+      // If cognitoUser happens to be null, set it first
       if (context.state.cognitoUser === null) {
-        console.error("cognitoUser must not be null. Restore user session or authenticate first.")
-        return reject(new Error("Failed to generate access token. Please re-authenticate."))
+        const cognitoUser = context.state.cognitoUserPool.getCurrentUser()
+        if (cognitoUser === null) {
+          console.error("cognitoUser must not be null. Probably failed to get last logged in user. Authenticate first.")
+          return reject(new Error("Failed to generate access token. Please re-authenticate."))
+        }
+        context.commit('setCognitoUser', cognitoUser)
       }
 
       context.state.cognitoUser.getSession((error, session) => {
