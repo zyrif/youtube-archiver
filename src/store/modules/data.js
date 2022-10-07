@@ -101,7 +101,7 @@ const actions = {
             .get(`/playlists/${playlistId}`)
             .then((response) => {
               if (response.status === 200) {
-                context.commit('setVideos', { playlistId: playlistId, videos: response.data['videos'] })
+                context.commit('setVideos', { playlistId: playlistId, videos: response.data['video_list'] })
                 setTimeout(() => {
                   context.commit('clearVideos', playlistId)
                 }, 30 * 60 * 1000);
