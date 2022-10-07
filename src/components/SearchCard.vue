@@ -57,11 +57,15 @@
         >
           <v-row class="mx-1" align="center" justify="start">
             <span class="text-subtitle-2">
-              {{ playlistInfo.numOfVideo }}
+              {{ playlistInfo.numOfVideo > 1 ? `${playlistInfo.numOfVideo} videos available` :
+                  `${playlistInfo.numOfVideo} video available`
+              }}
             </span>
             &nbsp; &nbsp;
             <span class="text-subtitle-2">
-              {{ playlistInfo.numOfView }}
+              {{ playlistInfo.numOfView > 1 ? `Viewed ${playlistInfo.numOfView} times` :
+                `Viewed ${playlistInfo.numOfView} time`
+              }}
             </span>
           </v-row>
         </v-skeleton-loader>
@@ -73,7 +77,7 @@
         >
           <v-row class="mx-1" align="center" justify="start">
             <p class="text-subtitle-2 mt-2">
-              {{ playlistInfo.lastUpdated }}
+              {{ `Last Updated on ${playlistInfo.lastUpdated}` }}
             </p>
           </v-row>
         </v-skeleton-loader>
