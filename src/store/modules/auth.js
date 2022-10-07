@@ -3,8 +3,8 @@ import { AuthenticationDetails, CognitoUser, CognitoUserPool } from 'amazon-cogn
 const state = () => ({
   // TODO: Move IDs into environment variables
   cognitoUserPool: new CognitoUserPool({
-    UserPoolId: 'us-east-1_FyylEMoPZ',
-    ClientId: '6f22i7vfekvlut67n7t2b94suj'
+    UserPoolId: 'us-east-1_KSHRWs8Ld',
+    ClientId: '160p7sjc02ol4en64lq84tkucr'
   }),
   cognitoUser: null,
 })
