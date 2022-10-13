@@ -1,7 +1,7 @@
 const state = () => ({
   // array holding user's playlists sans videos
   playlists: [],
-  
+
   // map/dict of videos keyed by playlist_id
   videos: {}
 })
@@ -26,7 +26,6 @@ const mutations = {
     state.playlists = playlists
   },
   clearPlaylists(state) {
-    console.info("Clearing cached playlists")
     state.playlists = []
   },
   setVideos(state, payload) {
@@ -48,10 +47,10 @@ const mutations = {
 }
 
 const actions = {
-  fetchPlaylists({ getters, commit, dispatch }) {
+  fetchPlaylists({ getters, commit, dispatch }, payload = { force: false }) {
     const axios = this._vm.$axios
     return new Promise((resolve, reject) => {
-      if (getters.playlistsNotEmpty) {
+      if (getters.playlistsNotEmpty && !payload.force) {
         resolve(getters.getPlaylists)
       } else {
         const httpCall = () => {
@@ -60,10 +59,6 @@ const actions = {
             .then((response) => {
               if (response.status === 200) {
                 commit('setPlaylists', response.data)
-                setTimeout(() => {
-                  commit('clearPlaylists')
-                }, 60 * 1000)
-
                 resolve(getters.getPlaylists)
               } else {
                 reject(response)
@@ -133,6 +128,31 @@ const actions = {
       }
     })
 
+  },
+  deletePlaylist(context, id) {
+    const axios = this._vm.$axios
+    return new Promise((resolve, reject) => {
+      context.dispatch('setOrRefreshToken')
+        .then(() => {
+          axios
+            .delete(`/playlists/${id}`)
+            .then((response) =>{
+              if (response.status === 204) {
+                context.dispatch('fetchPlaylists', { force: true })
+                resolve(true)
+              } else {
+                console.debug(response)
+                reject(response)
+              }
+            })
+            .catch((error) => {
+              reject(error)
+            })
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
   }
 }
 

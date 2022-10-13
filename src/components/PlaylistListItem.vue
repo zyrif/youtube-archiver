@@ -6,7 +6,11 @@
     width="100%"
     @click="$emit('playlist-selected', item['playlist_id'])"
   >
-    <v-card-title>{{ item['title'] }} </v-card-title>
+    <v-card-title>
+      {{ item['title'] }}
+      <v-spacer />
+      <v-btn icon :loading="isDeleteBtnLoading" @click.stop="deleteHandler"><v-icon small> fas fa-trash </v-icon></v-btn>
+    </v-card-title>
     <v-card-text>
       <v-row class="mx-1" align="center" justify="start">
         <p class="text-subtitle-2">
@@ -44,10 +48,35 @@
 <script>
 export default {
   props: ['hover', 'item'],
+
+  data: function () {
+    return {
+      isDeleteBtnLoading: false
+    }
+  },
+
   computed: {
     numOfVideosDeleted: function () {
       return this.numOfVideosTracked - this.numOfVideos;
     },
+  },
+
+  methods: {
+    deleteHandler: function () {
+      this.isDeleteBtnLoading = true
+      this.$store
+        .dispatch('deletePlaylist', this.item['playlist_id'])
+        .then(() => {
+          console.log("successfully deleted")
+        })
+        .catch((error) => {
+          console.log("error occured")
+          console.log(error)
+        })
+        .finally(() => {
+          this.isDeleteBtnLoading = false
+        })
+    }
   },
 };
 </script>

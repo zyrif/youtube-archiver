@@ -23,22 +23,28 @@
 import PlaylistListItem from './PlaylistListItem.vue';
 export default {
   components: { PlaylistListItem },
+
   mounted: function () {
     this.populateList();
   },
-  data: () => ({
-    playlists: [],
-  }),
+
+  computed: {
+    playlists: function () {
+      return this.$store.getters['getPlaylists']
+    }
+  },
+
   methods: {
     gotoPlaylist: function (id) {
       this.$router.push(`/playlist/${id}`);
     },
+
     populateList: function () {
       this.$store.commit('setLoadingDialogVisibility', { value: true });
       this.$store
         .dispatch('fetchPlaylists')
         .then((items) => {
-          this.playlists = items;
+          this.$store.commit('setPlaylists', items)
         })
         .catch((error) => {
           const networkError = error.message === 'Network Error'
