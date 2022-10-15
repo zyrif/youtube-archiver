@@ -1,8 +1,8 @@
 <template>
   <div style="display: contents">
     <v-card class="mx-auto" outlined max-width="720px">
-      <v-card-title v-if="resultCard"> Track A New Playlist </v-card-title>
-      <v-card-text v-if="resultCard">
+      <v-card-title v-if="states.isResultCard"> Track A New Playlist </v-card-title>
+      <v-card-text v-if="states.isResultCard">
         <v-row class="ma-1" align="start">
           <v-chip
             class="ma-1"
@@ -30,31 +30,21 @@
             {{ playlistUrl.listID }}
           </v-chip>
         </v-row>
-        <v-skeleton-loader :loading="isLoading" type="heading" class="mt-6">
+        <v-skeleton-loader :loading="isResultLoading" type="heading" class="mt-6">
           <v-row class="mx-1" align="center" justify="start">
             <span class="text-h4">
               {{ playlistInfo.title }}
             </span>
           </v-row>
         </v-skeleton-loader>
-        <v-skeleton-loader
-          :loading="isLoading"
-          type="text"
-          max-width="100px"
-          class="mt-4"
-        >
+        <v-skeleton-loader :loading="isResultLoading" type="text" max-width="100px" class="mt-4">
           <v-row class="mx-1" align="center" justify="start">
             <p class="text-subtitle-1">
               {{ playlistInfo.uploader }}
             </p>
           </v-row>
         </v-skeleton-loader>
-        <v-skeleton-loader
-          :loading="isLoading"
-          type="text"
-          max-width="150px"
-          class="mt-3"
-        >
+        <v-skeleton-loader :loading="isResultLoading" type="text" max-width="150px" class="mt-3">
           <v-row class="mx-1" align="center" justify="start">
             <span class="text-subtitle-2">
               {{ playlistInfo.numOfVideo > 1 ? `${playlistInfo.numOfVideo} videos available` :
@@ -69,24 +59,14 @@
             </span>
           </v-row>
         </v-skeleton-loader>
-        <v-skeleton-loader
-          :loading="isLoading"
-          type="text"
-          max-width="170px"
-          class="mt-1"
-        >
+        <v-skeleton-loader :loading="isResultLoading" type="text" max-width="170px" class="mt-1">
           <v-row class="mx-1" align="center" justify="start">
             <p class="text-subtitle-2 mt-2">
               {{ `Last Updated on ${playlistInfo.lastUpdated}` }}
             </p>
           </v-row>
         </v-skeleton-loader>
-        <v-skeleton-loader
-          :loading="isLoading"
-          type="paragraph"
-          max-width="500px"
-          class="mt-4"
-        >
+        <v-skeleton-loader :loading="isResultLoading" type="paragraph" max-width="500px" class="mt-4">
           <v-row class="mx-1" align="end">
             <p class="text-body-1">
               {{ playlistInfo.description }}
@@ -94,10 +74,10 @@
           </v-row>
         </v-skeleton-loader>
       </v-card-text>
-      <v-card-actions v-if="resultCard">
+      <v-card-actions v-if="states.isResultCard">
         <v-row class="ma-1" align="center" justify="end">
           <v-btn text @click="resetHandler"> reset </v-btn>
-          <v-btn text :disabled="isLoading" @click="trackHandler">
+          <v-btn text :disabled="isResultLoading" :loading="states.isAddTrackingLoading" @click="trackHandler">
             track
           </v-btn>
         </v-row>
@@ -127,7 +107,10 @@ import { debounce } from '../utils/helpers';
 export default {
   components: { ErrorDialog },
   data: () => ({
-    resultCard: false,
+    states: {
+      isResultCard: false,
+      isAddTrackingLoading: false,
+    },
 
     playlistUrl: {
       raw: '',
@@ -156,7 +139,7 @@ export default {
     },
   }),
   computed: {
-    isLoading: function () {
+    isResultLoading: function () {
       return this.playlistInfo.title === '';
     },
     keywords: function () {
@@ -221,6 +204,8 @@ export default {
     trackHandler: function () {
       const payload = new URLSearchParams();
       payload.append('playlist_id', this.playlistUrl.listID);
+
+      this.states.isAddTrackingLoading = true
       this.$axios
         .post('/playlists/', payload)
         .then((response) => {
@@ -236,13 +221,16 @@ export default {
           // TODO: show error dialog
           console.error('some error occured sending request');
           console.log(error);
+        })
+        .finally(() => {
+          this.states.isAddTrackingLoading = false
         });
     },
     resetHandler: function () {
       // TODO: also cancel any pending axios request
       this.playlistUrl.raw = '';
       this.playlistInfo.title = '';
-      this.resultCard = false;
+      this.states.isResultCard = false;
     },
     openLoginDialog: function () {
       this.$store.commit('setLoginDialogVisibility', { value: true });
@@ -260,7 +248,7 @@ export default {
           listID: matches.groups.playlistid,
         });
 
-        this.resultCard = true;
+        this.states.isResultCard = true;
         this.fetchResult();
       }
     },
