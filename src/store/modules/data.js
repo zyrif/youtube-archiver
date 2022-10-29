@@ -19,11 +19,12 @@ const getters = {
 }
 
 const mutations = {
-  setPlaylists(state, playlists) {
-    if (!Array.isArray(playlists)) {
-      throw new Error("Value is not an array")
+  setPlaylists(state, data = { playlists: [] }) {
+     if (!Array.isArray(data.playlists)) {
+      state.playlists = []
+    } else {
+      state.playlists = data.playlists
     }
-    state.playlists = playlists
   },
   clearPlaylists(state) {
     state.playlists = []
