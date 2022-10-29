@@ -129,7 +129,7 @@ export default {
     hintPositions: {},
 
     playlistInfo: {
-      playlistId: '',
+      id: '',
       title: '',
       uploader: '',
       numOfVideo: '',
@@ -203,7 +203,7 @@ export default {
   methods: {
     trackHandler: function () {
       const payload = new URLSearchParams();
-      payload.append('playlist_id', this.playlistUrl.listID);
+      payload.append('id', this.playlistUrl.listID);
 
       this.states.isAddTrackingLoading = true
       this.$axios
@@ -352,7 +352,7 @@ export default {
         })
         .then((response) => {
           if (response.status === 200) {
-            this.playlistInfo.playlistId = response.data['playlist_id'];
+            this.playlistInfo.id = response.data['id'];
             this.playlistInfo.title = response.data['title'];
             this.playlistInfo.description = response.data['description'];
             this.playlistInfo.numOfVideo = response.data['num_of_videos'];

@@ -14,7 +14,7 @@ const getters = {
     return state.playlists
   },
   getVideos(state) {
-    return (playlistId) => state.videos[playlistId] || []
+    return (id) => state.videos[id] || []
   }
 }
 
@@ -29,20 +29,20 @@ const mutations = {
     state.playlists = []
   },
   setVideos(state, payload) {
-    const playlistId = payload['playlistId']
+    const id = payload['id']
     const videos = payload['videos']
 
-    if (!(typeof playlistId === 'string' || playlistId instanceof String)) {
+    if (!(typeof id === 'string' || id instanceof String)) {
       throw new Error("ID is not a string")
     }
     if (!Array.isArray(videos)) {
       throw new Error("Value is not an array")
     }
 
-    state.videos[playlistId] = videos
+    state.videos[id] = videos
   },
-  clearVideos(state, playlistId) {
-    delete state.videos[playlistId]
+  clearVideos(state, id) {
+    delete state.videos[id]
   }
 }
 
@@ -83,25 +83,25 @@ const actions = {
       }
     })
   },
-  fetchVideos(context, playlistId) {
+  fetchVideos(context, id) {
     const axios = this._vm.$axios
 
     return new Promise((resolve, reject) => {
-      const videos = context.getters.getVideos(playlistId)
+      const videos = context.getters.getVideos(id)
       if (videos.length > 0) {
         resolve(videos)
       } else {
         const httpCall = () => {
           axios
-            .get(`/playlists/${playlistId}`)
+            .get(`/playlists/${id}`)
             .then((response) => {
               if (response.status === 200) {
-                context.commit('setVideos', { playlistId: playlistId, videos: response.data['video_list'] })
+                context.commit('setVideos', { id: id, videos: response.data['video_list'] })
                 setTimeout(() => {
-                  context.commit('clearVideos', playlistId)
+                  context.commit('clearVideos', id)
                 }, 30 * 60 * 1000);
 
-                resolve(context.getters.getVideos(playlistId))
+                resolve(context.getters.getVideos(id))
               } else {
                 reject(response)
               }
@@ -136,7 +136,7 @@ const actions = {
         .then(() => {
           axios
             .delete(`/playlists/${id}`)
-            .then((response) =>{
+            .then((response) => {
               if (response.status === 204) {
                 context.dispatch('fetchPlaylists', { force: true })
                 resolve(true)

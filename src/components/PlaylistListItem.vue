@@ -4,7 +4,7 @@
     :class="hover ? 'red elevation-2' : 'grey lighten-2 elevation-0'"
     :ripple="false"
     width="100%"
-    @click="$emit('playlist-selected', item['playlist_id'])"
+    @click="$emit('playlist-selected', item['id'])"
   >
     <v-card-title>
       {{ item['title'] }}
@@ -65,7 +65,7 @@ export default {
     deleteHandler: function () {
       this.isDeleteBtnLoading = true
       this.$store
-        .dispatch('deletePlaylist', this.item['playlist_id'])
+        .dispatch('deletePlaylist', this.item['id'])
         .then(() => {
           console.log("successfully deleted")
         })

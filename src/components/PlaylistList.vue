@@ -6,7 +6,7 @@
     <v-row>
       <v-hover
         v-for="item in playlists"
-        :key="item['playlist_id']"
+        :key="item['id']"
         v-slot="{ hover }"
       >
         <playlist-list-item
