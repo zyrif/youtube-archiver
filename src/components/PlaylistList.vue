@@ -43,9 +43,6 @@ export default {
       this.$store.commit('setLoadingDialogVisibility', { value: true });
       this.$store
         .dispatch('fetchPlaylists')
-        .then((items) => {
-          this.$store.commit('setPlaylists', items)
-        })
         .catch((error) => {
           const networkError = error.message === 'Network Error'
           this.$store.getters.getErrorDialogRef
