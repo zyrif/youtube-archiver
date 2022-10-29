@@ -42,6 +42,9 @@
             v-on:keydown="clickSignupBtn"
           ></v-text-field>
         </v-form>
+        <v-btn ref="forgotPassBtn" class="grey--text" text v-on:click="forgetPasswordHandler">
+          Forgot Password?
+        </v-btn>
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -80,6 +83,8 @@
           color="orange"
         />
       </template>
+    </input-dialog>
+    <input-dialog ref="refPasswordResetDialog">
     </input-dialog>
   </div>
 </template>
@@ -212,6 +217,18 @@ export default {
                     });
                   }
                 });
+            } else if (error.code === 'PasswordResetRequiredException') {
+              this.$refs.refAuthErrorDialog
+                .open({
+                  errorTitle: 'Password reset required!',
+                  errorMsg: '',
+                })
+              this.$refs.refAuthInputDialog
+                .open({
+                  title: 'Reset your password',
+                  label: 'Password Reset Code',
+                  hint: 'Enter the code sent to your email address here',
+                })
             } else if (error.code === 'ResourceNotFoundException') {
               this.$refs.refAuthErrorDialog
                 .open({
@@ -307,12 +324,68 @@ export default {
       });
     },
 
+    forgetPasswordHandler: function () {
+      this.$refs.refPasswordResetDialog
+        .open({
+          title: 'Reset your password',
+          label: 'Email Address',
+          hint: 'Enter the email address used to register the account',
+          type: 'email',
+        })
+        .then(email => {
+          const successCallback = () => {
+            this.$refs.refPasswordResetDialog
+              .open({
+                title: 'Reset your password',
+                label: 'Password Reset Code',
+                hint: 'Enter the code that was sent to your email',
+              })
+              .then(code => {
+                this.$refs.refPasswordResetDialog
+                  .open({
+                    title: 'Reset your password',
+                    label: 'New Password',
+                    hint: 'Enter the new password you want to set',
+                    type: 'password',
+                  })
+                  .then(newPassword => {
+                    this.confirmPassword({
+                      email: email,
+                      code: code,
+                      newPassword: newPassword,
+                      successCallback: () => {
+                        alert("Successfully reset password. Please login.")
+                      },
+                      errorCallback: (err) => {
+                        this.$refs.refAuthErrorDialog.open({
+                          errorTitle: 'Failed to set new password!',
+                          errorMsg: `Reason: ${err.message}`,
+                          actionable: false,
+                        })
+                      }
+                    })
+                  })
+              })
+          }
+          const errorCallback = (err) => {
+            this.$refs.refAuthErrorDialog.open({
+              errorTitle: 'Failed to process password reset request!',
+              errorMsg: `Reason: ${err.message}`,
+              actionable: false,
+            })
+          }
+          this.forgotPassword({ email, successCallback, errorCallback })
+        })
+    },
+
     // map vuex actions
     ...mapActions([
       'authenticateUser',
       'confirmRegistration',
       'resendConfirmationCode',
       'signUp',
+      'forgotPassword',
+      'confirmPassword',
     ]),
   },
 };

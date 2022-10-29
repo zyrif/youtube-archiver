@@ -126,6 +126,28 @@ const actions = {
   resendConfirmationCode(context, resultCallback) {
     context.state.cognitoUser.resendConfirmationCode(resultCallback)
   },
+  forgotPassword(context, { email, successCallback, errorCallback }) {
+    context.commit('setCognitoUser', new CognitoUser({
+      Username: email,
+      Pool: context.state.cognitoUserPool,
+    }))
+
+    context.state.cognitoUser.forgotPassword({
+      onSuccess: successCallback,
+      onFailure: errorCallback
+    })
+  },
+  confirmPassword(context, { email, code, newPassword, successCallback, errorCallback }) {
+    context.commit('setCognitoUser', new CognitoUser({
+      Username: email,
+      Pool: context.state.cognitoUserPool,
+    }))
+
+    context.state.cognitoUser.confirmPassword(code, newPassword, {
+      onSuccess: successCallback,
+      onFailure: errorCallback
+    })
+  },
   signUp(context, { email, password, resultCallback }) {
     context.state.cognitoUserPool.signUp(email, password, null, null, resultCallback)
   },

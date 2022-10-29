@@ -9,9 +9,10 @@
       <v-card-title class="text-h5"> {{ options.title }} </v-card-title>
       <v-card-text>
         <v-text-field
-          v-model="code"
+          v-model="value"
           :label="options.label" 
           :hint="options.hint"
+          :type="options.type"
         />
       </v-card-text>
       <v-card-actions>
@@ -37,7 +38,7 @@ export default {
         zIndex: 200,
       },
 
-      code: '',
+      value: '',
 
       resolve: null,
       reject: null,
@@ -60,17 +61,23 @@ export default {
         this.options['hint'] = '';
       }
 
+      if (!('type' in this.options)) {
+        this.options['type'] = 'text';
+      }
+
       return new Promise((resolve, reject) => {
         this.resolve = resolve;
         this.reject = reject;
       });
     },
     submit() {
-      this.resolve(this.code);
+      this.resolve(this.value);
+      this.value = '';
       this.dialog = false;
     },
     cancel() {
       this.resolve(false);
+      this.value = '';
       this.dialog = false;
     },
   },
