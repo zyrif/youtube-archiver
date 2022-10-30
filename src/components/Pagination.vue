@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { drop } from 'lodash';
+import { drop } from "lodash";
 export default {
   props: { items: Array },
   data: () => ({
@@ -50,5 +50,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

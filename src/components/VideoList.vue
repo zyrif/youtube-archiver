@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import VideoListItem from './VideoListItem.vue';
-import VideoListPagination from './Pagination.vue';
+import VideoListItem from "./VideoListItem.vue";
+import VideoListPagination from "./Pagination.vue";
 export default {
   components: { VideoListItem, VideoListPagination },
   mounted: function () {
@@ -26,9 +26,9 @@ export default {
   }),
   methods: {
     populateList: function () {
-      this.$store.commit('setLoadingDialogVisibility', { value: true });
+      this.$store.commit("setLoadingDialogVisibility", { value: true });
       this.$store
-        .dispatch('fetchVideos', this.$route.params.id)
+        .dispatch("fetchVideos", this.$route.params.id)
         .then((videos) => {
           this.videos = videos;
         })
@@ -39,16 +39,15 @@ export default {
               errorMsg: error.toJSON ? error.toJSON().message : error.message,
             })
             .then(() => {
-              this.$router.replace('/');
+              this.$router.replace("/");
             });
         })
         .finally(() => {
-          this.$store.commit('setLoadingDialogVisibility', { value: false });
+          this.$store.commit("setLoadingDialogVisibility", { value: false });
         });
     },
   },
 };
 </script>
 
-<style>
-</style>
+<style></style>

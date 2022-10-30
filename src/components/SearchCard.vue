@@ -1,7 +1,9 @@
 <template>
   <div style="display: contents">
     <v-card class="mx-auto" outlined max-width="720px">
-      <v-card-title v-if="states.isResultCard"> Track A New Playlist </v-card-title>
+      <v-card-title v-if="states.isResultCard">
+        Track A New Playlist
+      </v-card-title>
       <v-card-text v-if="states.isResultCard">
         <v-row class="ma-1" align="start">
           <v-chip
@@ -30,43 +32,71 @@
             {{ playlistUrl.listID }}
           </v-chip>
         </v-row>
-        <v-skeleton-loader :loading="isResultLoading" type="heading" class="mt-6">
+        <v-skeleton-loader
+          :loading="isResultLoading"
+          type="heading"
+          class="mt-6"
+        >
           <v-row class="mx-1" align="center" justify="start">
             <span class="text-h4">
               {{ playlistInfo.title }}
             </span>
           </v-row>
         </v-skeleton-loader>
-        <v-skeleton-loader :loading="isResultLoading" type="text" max-width="100px" class="mt-4">
+        <v-skeleton-loader
+          :loading="isResultLoading"
+          type="text"
+          max-width="100px"
+          class="mt-4"
+        >
           <v-row class="mx-1" align="center" justify="start">
             <p class="text-subtitle-1">
               {{ playlistInfo.uploader }}
             </p>
           </v-row>
         </v-skeleton-loader>
-        <v-skeleton-loader :loading="isResultLoading" type="text" max-width="150px" class="mt-3">
+        <v-skeleton-loader
+          :loading="isResultLoading"
+          type="text"
+          max-width="150px"
+          class="mt-3"
+        >
           <v-row class="mx-1" align="center" justify="start">
             <span class="text-subtitle-2">
-              {{ playlistInfo.numOfVideo > 1 ? `${playlistInfo.numOfVideo} videos available` :
-                  `${playlistInfo.numOfVideo} video available`
+              {{
+                playlistInfo.numOfVideo > 1
+                  ? `${playlistInfo.numOfVideo} videos available`
+                  : `${playlistInfo.numOfVideo} video available`
               }}
             </span>
             &nbsp; &nbsp;
             <span class="text-subtitle-2">
-              {{ playlistInfo.numOfView > 1 ? `Viewed ${playlistInfo.numOfView} times` :
-                `Viewed ${playlistInfo.numOfView} time`
+              {{
+                playlistInfo.numOfView > 1
+                  ? `Viewed ${playlistInfo.numOfView} times`
+                  : `Viewed ${playlistInfo.numOfView} time`
               }}
             </span>
           </v-row>
         </v-skeleton-loader>
-        <v-skeleton-loader :loading="isResultLoading" type="text" max-width="170px" class="mt-1">
+        <v-skeleton-loader
+          :loading="isResultLoading"
+          type="text"
+          max-width="170px"
+          class="mt-1"
+        >
           <v-row class="mx-1" align="center" justify="start">
             <p class="text-subtitle-2 mt-2">
               {{ `Last Updated on ${playlistInfo.lastUpdated}` }}
             </p>
           </v-row>
         </v-skeleton-loader>
-        <v-skeleton-loader :loading="isResultLoading" type="paragraph" max-width="500px" class="mt-4">
+        <v-skeleton-loader
+          :loading="isResultLoading"
+          type="paragraph"
+          max-width="500px"
+          class="mt-4"
+        >
           <v-row class="mx-1" align="end">
             <p class="text-body-1">
               {{ playlistInfo.description }}
@@ -77,7 +107,12 @@
       <v-card-actions v-if="states.isResultCard">
         <v-row class="ma-1" align="center" justify="end">
           <v-btn text @click="resetHandler"> reset </v-btn>
-          <v-btn text :disabled="isResultLoading" :loading="states.isAddTrackingLoading" @click="trackHandler">
+          <v-btn
+            text
+            :disabled="isResultLoading"
+            :loading="states.isAddTrackingLoading"
+            @click="trackHandler"
+          >
             track
           </v-btn>
         </v-row>
@@ -102,8 +137,8 @@
 </template>
 
 <script>
-import ErrorDialog from './ErrorDialog.vue';
-import { debounce } from '../utils/helpers';
+import ErrorDialog from "./ErrorDialog.vue";
+import { debounce } from "../utils/helpers";
 export default {
   components: { ErrorDialog },
   data: () => ({
@@ -113,78 +148,78 @@ export default {
     },
 
     playlistUrl: {
-      raw: '',
-      protocol: '',
-      subdomain: '',
-      domain: '',
-      listID: '',
+      raw: "",
+      protocol: "",
+      subdomain: "",
+      domain: "",
+      listID: "",
     },
 
     autocompleteText: {
-      hidden: '',
-      visible: '',
+      hidden: "",
+      visible: "",
     },
 
     usedHints: [],
     hintPositions: {},
 
     playlistInfo: {
-      id: '',
-      title: '',
-      uploader: '',
-      numOfVideo: '',
-      numOfView: '',
-      lastUpdated: '',
-      description: '',
+      id: "",
+      title: "",
+      uploader: "",
+      numOfVideo: "",
+      numOfView: "",
+      lastUpdated: "",
+      description: "",
     },
   }),
   computed: {
     isResultLoading: function () {
-      return this.playlistInfo.title === '';
+      return this.playlistInfo.title === "";
     },
     keywords: function () {
       return {
         http: {
-          key: 'http',
-          value: 'http://',
-          mutuallyExclusive: 'https',
+          key: "http",
+          value: "http://",
+          mutuallyExclusive: "https",
           initialPosition: 1,
           predecessors: [],
         },
         https: {
-          key: 'https',
-          value: 'https://',
-          mutuallyExclusive: 'http',
+          key: "https",
+          value: "https://",
+          mutuallyExclusive: "http",
           initialPosition: 1,
           predecessors: [],
         },
         www: {
-          key: 'www',
-          value: 'www.',
-          mutuallyExclusive: 'm',
+          key: "www",
+          value: "www.",
+          mutuallyExclusive: "m",
           initialPosition: 1,
-          predecessors: ['http', 'https'],
+          predecessors: ["http", "https"],
         },
         m: {
-          key: 'm',
-          value: 'm.',
-          mutuallyExclusive: 'www',
+          key: "m",
+          value: "m.",
+          mutuallyExclusive: "www",
           initialPosition: 1,
-          predecessors: ['http', 'https'],
+          predecessors: ["http", "https"],
         },
         youtube: {
-          key: 'youtube',
-          value: 'youtube.com',
-          mutuallyExclusive: '',
+          key: "youtube",
+          value: "youtube.com",
+          mutuallyExclusive: "",
           initialPosition: 1,
-          predecessors: ['http', 'https', 'www', 'm'],
+          predecessors: ["http", "https", "www", "m"],
         },
         path: {
-          key: 'path',
-          value: '/playlist?list=',
-          mutuallyExclusive: '',
+          key: "path",
+          value: "/playlist?list=",
+          mutuallyExclusive: "",
           initialPosition: 11,
-          predecessors: ['http', 'https', 'www', 'm', 'youtube'],
+          predecessors: ["http", "https", "www", "m", "youtube"],
         },
       };
     },
@@ -203,37 +238,37 @@ export default {
   methods: {
     trackHandler: function () {
       const payload = new URLSearchParams();
-      payload.append('id', this.playlistUrl.listID);
+      payload.append("id", this.playlistUrl.listID);
 
-      this.states.isAddTrackingLoading = true
+      this.states.isAddTrackingLoading = true;
       this.$axios
-        .post('/playlists/', payload)
+        .post("/playlists/", payload)
         .then((response) => {
           console.log(response);
           if (response.status >= 200 && response.status <= 299) {
-            this.$router.push('/playlists');
+            this.$router.push("/playlists");
           } else {
             // TODO: show error dialog
-            console.error('some error occured: non 200 response received');
+            console.error("some error occured: non 200 response received");
           }
         })
         .catch((error) => {
           // TODO: show error dialog
-          console.error('some error occured sending request');
+          console.error("some error occured sending request");
           console.log(error);
         })
         .finally(() => {
-          this.states.isAddTrackingLoading = false
+          this.states.isAddTrackingLoading = false;
         });
     },
     resetHandler: function () {
       // TODO: also cancel any pending axios request
-      this.playlistUrl.raw = '';
-      this.playlistInfo.title = '';
+      this.playlistUrl.raw = "";
+      this.playlistInfo.title = "";
       this.states.isResultCard = false;
     },
     openLoginDialog: function () {
-      this.$store.commit('setLoginDialogVisibility', { value: true });
+      this.$store.commit("setLoginDialogVisibility", { value: true });
     },
     checkPlaylistUrl: function (url) {
       let re =
@@ -255,12 +290,12 @@ export default {
     setPlaylistUrl: function (values) {
       if (!values.listID) {
         // TODO: Show an alert to the user for invalid ID
-        throw new TypeError('Playlist ID must be a valid value');
+        throw new TypeError("Playlist ID must be a valid value");
       }
 
-      this.playlistUrl.protocol = values.protocol ? values.protocol : 'https';
-      this.playlistUrl.subdomain = values.subdomain ? values.subdomain : 'www';
-      this.playlistUrl.domain = values.domain ? values.domain : 'youtube.com';
+      this.playlistUrl.protocol = values.protocol ? values.protocol : "https";
+      this.playlistUrl.subdomain = values.subdomain ? values.subdomain : "www";
+      this.playlistUrl.domain = values.domain ? values.domain : "youtube.com";
       this.playlistUrl.listID = values.listID;
     },
     getHintPositions: function (hint) {
@@ -274,7 +309,7 @@ export default {
         let predecessor = this.keywords[hint.predecessors[i]];
         if (i > 0) {
           if (
-            predecessor.mutuallyExclusive !== '' &&
+            predecessor.mutuallyExclusive !== "" &&
             hint.predecessors[i - 1] === predecessor.mutuallyExclusive
           ) {
             let mutuallyExclusive =
@@ -304,11 +339,11 @@ export default {
       for (const keyword in this.keywords) {
         const element = this.keywords[keyword];
         let diff = trimmed;
-        trimmed = trimmed.replace(element.value, '');
+        trimmed = trimmed.replace(element.value, "");
 
         if (diff.length !== trimmed.length) {
           this.usedHints.push(element.key);
-          if (element.mutuallyExclusive !== '') {
+          if (element.mutuallyExclusive !== "") {
             this.usedHints.push(element.mutuallyExclusive);
           }
         }
@@ -324,54 +359,53 @@ export default {
           !this.usedHints.includes(element.key) &&
           trimmed.length <= element.value.length &&
           element.value.match(
-            new RegExp(`^${trimmed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`)
+            new RegExp(`^${trimmed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`)
           ) !== null &&
           this.hintPositions[element.key].includes(value.length)
         ) {
           this.autocompleteText.hidden = value;
-          this.autocompleteText.visible = element.value.replace(trimmed, '');
+          this.autocompleteText.visible = element.value.replace(trimmed, "");
           return;
         }
       }
     },
     doAutocomplete: function () {
       if (this.playlistUrl.raw.length === 0) {
-        this.playlistUrl.raw = "https://www.youtube.com/playlist?list="
-      }
-      else if (this.autocompleteText.visible.length > 0) {
+        this.playlistUrl.raw = "https://www.youtube.com/playlist?list=";
+      } else if (this.autocompleteText.visible.length > 0) {
         this.playlistUrl.raw += this.autocompleteText.visible;
       }
     },
     resetAutocomplete: function () {
-      this.autocompleteText.hidden = this.autocompleteText.visible = '';
+      this.autocompleteText.hidden = this.autocompleteText.visible = "";
       this.usedHints = [];
     },
     fetchResult: function () {
       this.$axios
-        .get('/pl-metadata/', {
+        .get("/pl-metadata/", {
           params: {
             id: this.playlistUrl.listID,
           },
         })
         .then((response) => {
           if (response.status === 200) {
-            this.playlistInfo.id = response.data['id'];
-            this.playlistInfo.title = response.data['title'];
-            this.playlistInfo.description = response.data['description'];
-            this.playlistInfo.numOfVideo = response.data['num_of_videos'];
-            this.playlistInfo.numOfView = response.data['views'];
-            this.playlistInfo.lastUpdated = response.data['last_updated'];
-            this.playlistInfo.uploader = response.data['uploader'];
+            this.playlistInfo.id = response.data["id"];
+            this.playlistInfo.title = response.data["title"];
+            this.playlistInfo.description = response.data["description"];
+            this.playlistInfo.numOfVideo = response.data["num_of_videos"];
+            this.playlistInfo.numOfView = response.data["views"];
+            this.playlistInfo.lastUpdated = response.data["last_updated"];
+            this.playlistInfo.uploader = response.data["uploader"];
           }
         })
         .catch((error) => {
           let e;
           let callable = this.fetchResult;
-          if (!error.status && error.message === 'Network Error') {
+          if (!error.status && error.message === "Network Error") {
             e = {
               errorTitle: "We can't communicate with the server!",
               errorMsg:
-                'Either internet is unavailable or the API server itself is on fire.',
+                "Either internet is unavailable or the API server itself is on fire.",
               actionable: true,
             };
           } else if (
@@ -380,11 +414,11 @@ export default {
           ) {
             if (error.response.status === 401) {
               e = {
-                errorTitle: 'We need to know who you are!',
+                errorTitle: "We need to know who you are!",
                 errorMsg:
-                  'To perform this action, please let us know who you are by Logging In.',
+                  "To perform this action, please let us know who you are by Logging In.",
                 actionable: true,
-                actionBtnText: 'Log In',
+                actionBtnText: "Log In",
               };
               callable = () => {
                 this.resetHandler();
@@ -392,7 +426,7 @@ export default {
               };
             } else {
               e = {
-                errorTitle: 'Your Request Failed!',
+                errorTitle: "Your Request Failed!",
                 errorMsg: `Reason: ${error.response.data.errorMessage}`,
                 actionable: true,
               };
@@ -402,13 +436,13 @@ export default {
             error.response.status <= 599
           ) {
             e = {
-              errorTitle: 'Blast!',
+              errorTitle: "Blast!",
               errorMsg: `It seems like the server fell over. It replied with: ${error.response.data.errorMessage}`,
               actionable: true,
             };
           } else {
             e = {
-              errorTitle: 'Oh Noes!',
+              errorTitle: "Oh Noes!",
               errorMsg:
                 "An Unexpected Error Occured. Your best bet is to contact us and let us know what's going on.",
               actionable: false,
@@ -426,7 +460,7 @@ export default {
     },
   },
   watch: {
-    'playlistUrl.raw': function (url) {
+    "playlistUrl.raw": function (url) {
       this.resetAutocomplete();
 
       // cancel previous debounced action (if any) and do a new one

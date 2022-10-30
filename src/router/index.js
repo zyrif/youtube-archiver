@@ -1,58 +1,58 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Landing from '../views/Landing.vue'
-import Dashboard from '../views/Dashboard.vue'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Landing from "../views/Landing.vue";
+import Dashboard from "../views/Dashboard.vue";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Landing
+    path: "/",
+    name: "Home",
+    component: Landing,
   },
   {
-    path: '/playlists',
-    name: 'Playlists',
+    path: "/playlists",
+    name: "Playlists",
     component: Dashboard,
     meta: {
       breadCrumbs: [
         {
-          text: 'Home',
+          text: "Home",
           to: {
-            path: '/'
-          }
+            path: "/",
+          },
         },
         {
-          text: 'Playlists',
-        }
-      ]
-    }
+          text: "Playlists",
+        },
+      ],
+    },
   },
   {
-    path: '/playlist/:id',
-    name: 'Videos',
+    path: "/playlist/:id",
+    name: "Videos",
     component: Dashboard,
     meta: {
       breadCrumbs: [
         {
-          text: 'Home',
+          text: "Home",
           to: {
-            path: '/'
-          }
+            path: "/",
+          },
         },
         {
-          text: 'Playlists',
+          text: "Playlists",
           to: {
-            path: '/playlists'
-          }
+            path: "/playlists",
+          },
         },
         {
-          text: 'Videos',
-        }
-      ]
-    }
-  }
+          text: "Videos",
+        },
+      ],
+    },
+  },
   // {
   //   path: '/about',
   //   name: 'About',
@@ -61,12 +61,12 @@ const routes = [
   //   // which is lazy-loaded when the route is visited.
   //   component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   // }
-]
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;

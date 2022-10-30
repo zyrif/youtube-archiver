@@ -2,37 +2,45 @@ module.exports = {
   root: true,
 
   env: {
-    node: true
+    node: true,
   },
 
-  'extends': [
-    'plugin:vue/essential',
-    'eslint:recommended'
+  extends: [
+    "plugin:vue/essential",
+    "eslint:recommended",
+    "plugin:prettier/recommended",
   ],
 
-  'plugins': [
-    'vuetify'
-  ],
+  plugins: ["vuetify"],
 
   parserOptions: {
-    parser: 'babel-eslint'
+    parser: "@babel/eslint-parser",
   },
 
   rules: {
-    'vuetify/no-deprecated-classes': 'warn',
-    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off'
+    "vuetify/no-deprecated-classes": "warn",
+    "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
+    "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
   },
 
   overrides: [
     {
       files: [
-        '**/__tests__/*.{j,t}s?(x)',
-        '**/tests/unit/**/*.spec.{j,t}s?(x)'
+        "**/__tests__/*.{j,t}s?(x)",
+        "**/tests/unit/**/*.spec.{j,t}s?(x)",
       ],
       env: {
-        jest: true
-      }
-    }
-  ]
-}
+        jest: true,
+      },
+    },
+    {
+      files: [
+        "**/__tests__/*.{j,t}s?(x)",
+        "**/tests/unit/**/*.spec.{j,t}s?(x)",
+      ],
+      env: {
+        jest: true,
+      },
+    },
+  ],
+};

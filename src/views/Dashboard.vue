@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import PlaylistList from '../components/PlaylistList.vue';
-import VideoList from '../components/VideoList.vue';
+import PlaylistList from "../components/PlaylistList.vue";
+import VideoList from "../components/VideoList.vue";
 export default {
   components: { PlaylistList, VideoList },
   computed: {
@@ -16,13 +16,13 @@ export default {
     },
     currentComponent: function () {
       switch (this.$route.name) {
-        case 'Playlists':
-          return 'PlaylistList';
-        case 'Videos':
-          return 'VideoList';
+        case "Playlists":
+          return "PlaylistList";
+        case "Videos":
+          return "VideoList";
         default:
           // TODO: add a proper 404 component here
-          return 'PlaylistList';
+          return "PlaylistList";
       }
     },
   },

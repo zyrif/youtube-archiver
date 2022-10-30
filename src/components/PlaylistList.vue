@@ -4,11 +4,7 @@
       <p class="text-h3 ma-2">Playlists</p>
     </v-row>
     <v-row>
-      <v-hover
-        v-for="item in playlists"
-        :key="item['id']"
-        v-slot="{ hover }"
-      >
+      <v-hover v-for="item in playlists" :key="item['id']" v-slot="{ hover }">
         <playlist-list-item
           :hover="hover"
           :item="item"
@@ -20,7 +16,7 @@
 </template>
 
 <script>
-import PlaylistListItem from './PlaylistListItem.vue';
+import PlaylistListItem from "./PlaylistListItem.vue";
 export default {
   components: { PlaylistListItem },
 
@@ -30,8 +26,8 @@ export default {
 
   computed: {
     playlists: function () {
-      return this.$store.getters['getPlaylists']
-    }
+      return this.$store.getters["getPlaylists"];
+    },
   },
 
   methods: {
@@ -40,28 +36,27 @@ export default {
     },
 
     populateList: function () {
-      this.$store.commit('setLoadingDialogVisibility', { value: true });
+      this.$store.commit("setLoadingDialogVisibility", { value: true });
       this.$store
-        .dispatch('fetchPlaylists')
+        .dispatch("fetchPlaylists")
         .catch((error) => {
-          const networkError = error.message === 'Network Error'
+          const networkError = error.message === "Network Error";
           this.$store.getters.getErrorDialogRef
             .open({
               errorTitle: error.toJSON ? error.toJSON().name : error.name,
               errorMsg: error.toJSON ? error.toJSON().message : error.message,
-              defaultBtnText: networkError ? 'Retry' : 'Okay',
+              defaultBtnText: networkError ? "Retry" : "Okay",
             })
             .then(() => {
-              networkError ? this.populateList() : this.$router.replace('/')
+              networkError ? this.populateList() : this.$router.replace("/");
             });
         })
         .finally(() => {
-          this.$store.commit('setLoadingDialogVisibility', { value: false });
+          this.$store.commit("setLoadingDialogVisibility", { value: false });
         });
     },
   },
 };
 </script>
 
-<style>
-</style>
+<style></style>

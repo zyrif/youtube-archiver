@@ -38,13 +38,13 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapMutations } from 'vuex';
-import LoginDialog from './components/LoginCard.vue';
-import ErrorDialog from './components/ErrorDialog.vue';
-import LoadingDialog from './components/LoadingDialog.vue';
+import { mapActions, mapGetters, mapMutations } from "vuex";
+import LoginDialog from "./components/LoginCard.vue";
+import ErrorDialog from "./components/ErrorDialog.vue";
+import LoadingDialog from "./components/LoadingDialog.vue";
 
 export default {
-  name: 'App',
+  name: "App",
 
   components: {
     LoginDialog,
@@ -57,8 +57,8 @@ export default {
     this.restoreLastUserSession()
       .catch((error) => {
         console.debug(error);
-        if (this.$route.name !== 'Home') {
-          this.$router.replace('/');
+        if (this.$route.name !== "Home") {
+          this.$router.replace("/");
         }
       })
       .finally(() => {
@@ -76,42 +76,42 @@ export default {
         return this.$store.getters.isLoginDialogVisible;
       },
       set: function (value) {
-        this.$store.commit('setLoginDialogVisibility', { value });
+        this.$store.commit("setLoginDialogVisibility", { value });
       },
     },
     ...mapGetters([
-      'isLoggedIn',
-      'userEmail',
-      'isLoginButtonLoading',
-      'getErrorDialogRef',
+      "isLoggedIn",
+      "userEmail",
+      "isLoginButtonLoading",
+      "getErrorDialogRef",
     ]),
   },
 
   methods: {
     titleHandler: function () {
-      this.$router.push('/');
+      this.$router.push("/");
     },
     profileHandler: function () {
-      this.$router.push('/playlists');
+      this.$router.push("/playlists");
     },
     logoutHandler: function () {
       this.setLoginButtonLoadingState({ value: true });
       this.signOut((error) => {
         this.setLoginButtonLoadingState({ value: false });
         if (!error) {
-          if (this.$route.name !== 'Home') {
-            this.$router.replace('/');
+          if (this.$route.name !== "Home") {
+            this.$router.replace("/");
           }
           return;
         }
         this.$refs.refErrorDialog.open({
-          errorTitle: 'Failed to log you out properly!',
+          errorTitle: "Failed to log you out properly!",
           errorMsg: `Reason: ${error.message}`,
         });
       });
     },
-    ...mapMutations(['setLoginButtonLoadingState', 'setErrorDialogRef']),
-    ...mapActions(['restoreLastUserSession', 'signOut']),
+    ...mapMutations(["setLoginButtonLoadingState", "setErrorDialogRef"]),
+    ...mapActions(["restoreLastUserSession", "signOut"]),
   },
 };
 </script>

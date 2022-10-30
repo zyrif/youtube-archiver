@@ -3,159 +3,163 @@ const state = () => ({
   playlists: [],
 
   // map/dict of videos keyed by playlist_id
-  videos: {}
-})
+  videos: {},
+});
 
 const getters = {
   playlistsNotEmpty(state) {
-    return state.playlists.length > 0
+    return state.playlists.length > 0;
   },
   getPlaylists(state) {
-    return state.playlists
+    return state.playlists;
   },
   getVideos(state) {
-    return (id) => state.videos[id] || []
-  }
-}
+    return (id) => state.videos[id] || [];
+  },
+};
 
 const mutations = {
   setPlaylists(state, data = { playlists: [] }) {
-     if (!Array.isArray(data.playlists)) {
-      state.playlists = []
+    if (!Array.isArray(data.playlists)) {
+      state.playlists = [];
     } else {
-      state.playlists = data.playlists
+      state.playlists = data.playlists;
     }
   },
   clearPlaylists(state) {
-    state.playlists = []
+    state.playlists = [];
   },
   setVideos(state, payload) {
-    const id = payload['id']
-    const videos = payload['videos']
+    const id = payload["id"];
+    const videos = payload["videos"];
 
-    if (!(typeof id === 'string' || id instanceof String)) {
-      throw new Error("ID is not a string")
+    if (!(typeof id === "string" || id instanceof String)) {
+      throw new Error("ID is not a string");
     }
     if (!Array.isArray(videos)) {
-      throw new Error("Value is not an array")
+      throw new Error("Value is not an array");
     }
 
-    state.videos[id] = videos
+    state.videos[id] = videos;
   },
   clearVideos(state, id) {
-    delete state.videos[id]
-  }
-}
+    delete state.videos[id];
+  },
+};
 
 const actions = {
   fetchPlaylists({ getters, commit, dispatch }, payload = { force: false }) {
-    const axios = this._vm.$axios
+    const axios = this._vm.$axios;
     return new Promise((resolve, reject) => {
       if (getters.playlistsNotEmpty && !payload.force) {
-        resolve(getters.getPlaylists)
+        resolve(getters.getPlaylists);
       } else {
         const httpCall = () => {
           axios
-            .get('/playlists/')
+            .get("/playlists/")
             .then((response) => {
               if (response.status === 200) {
-                commit('setPlaylists', response.data)
-                resolve(getters.getPlaylists)
+                commit("setPlaylists", response.data);
+                resolve(getters.getPlaylists);
               } else {
-                reject(response)
+                reject(response);
               }
             })
             .catch((error) => {
-              reject(error)
-            })
-        }
+              reject(error);
+            });
+        };
 
         if (getters.isLoggedIn()) {
-          httpCall()
+          httpCall();
         } else {
-          dispatch('setOrRefreshToken')
+          dispatch("setOrRefreshToken")
             .then(() => {
-              httpCall()
+              httpCall();
             })
             .catch((error) => {
-              reject(error)
-            })
+              reject(error);
+            });
         }
       }
-    })
+    });
   },
   fetchVideos(context, id) {
-    const axios = this._vm.$axios
+    const axios = this._vm.$axios;
 
     return new Promise((resolve, reject) => {
-      const videos = context.getters.getVideos(id)
+      const videos = context.getters.getVideos(id);
       if (videos.length > 0) {
-        resolve(videos)
+        resolve(videos);
       } else {
         const httpCall = () => {
           axios
             .get(`/playlists/${id}`)
             .then((response) => {
               if (response.status === 200) {
-                context.commit('setVideos', { id: id, videos: response.data['video_list'] })
+                context.commit("setVideos", {
+                  id: id,
+                  videos: response.data["video_list"],
+                });
                 setTimeout(() => {
-                  context.commit('clearVideos', id)
+                  context.commit("clearVideos", id);
                 }, 30 * 60 * 1000);
 
-                resolve(context.getters.getVideos(id))
+                resolve(context.getters.getVideos(id));
               } else {
-                reject(response)
+                reject(response);
               }
             })
             .catch((error) => {
-              reject(error)
-            })
-        }
+              reject(error);
+            });
+        };
 
         if (context.getters.isLoggedIn()) {
-          httpCall()
+          httpCall();
         } else {
-          context.dispatch('setOrRefreshToken')
+          context
+            .dispatch("setOrRefreshToken")
             .then((cognitoUser) => {
-              console.debug('Called setOrRefreshToken')
-              console.debug(cognitoUser)
-              httpCall()
+              console.debug("Called setOrRefreshToken");
+              console.debug(cognitoUser);
+              httpCall();
             })
             .catch((error) => {
-              console.debug('setOrRefreshToken encountered error')
-              reject(error)
-            })
+              console.debug("setOrRefreshToken encountered error");
+              reject(error);
+            });
         }
       }
-    })
-
+    });
   },
   deletePlaylist(context, id) {
-    const axios = this._vm.$axios
+    const axios = this._vm.$axios;
     return new Promise((resolve, reject) => {
-      context.dispatch('setOrRefreshToken')
+      context
+        .dispatch("setOrRefreshToken")
         .then(() => {
           axios
             .delete(`/playlists/${id}`)
             .then((response) => {
               if (response.status === 204) {
-                context.dispatch('fetchPlaylists', { force: true })
-                resolve(true)
+                context.dispatch("fetchPlaylists", { force: true });
+                resolve(true);
               } else {
-                console.debug(response)
-                reject(response)
+                console.debug(response);
+                reject(response);
               }
             })
             .catch((error) => {
-              reject(error)
-            })
+              reject(error);
+            });
         })
         .catch((error) => {
-          reject(error)
-        })
-    })
-  }
-}
+          reject(error);
+        });
+    });
+  },
+};
 
 export default {
   namespaced: false, // TODO: set this to true after fixing mapping functions
@@ -163,4 +167,4 @@ export default {
   getters,
   mutations,
   actions,
-}
+};

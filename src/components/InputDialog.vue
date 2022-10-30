@@ -10,7 +10,7 @@
       <v-card-text>
         <v-text-field
           v-model="value"
-          :label="options.label" 
+          :label="options.label"
           :hint="options.hint"
           :type="options.type"
         />
@@ -19,8 +19,12 @@
         <slot name="left-card-actions"></slot>
         <v-spacer />
         <slot name="right-card-actions">
-          <v-btn color="grey darken-1" text v-on:click="cancel()"> Cancel </v-btn>
-          <v-btn color="blue darken-1" text v-on:click="submit()"> Submit </v-btn>
+          <v-btn color="grey darken-1" text v-on:click="cancel()">
+            Cancel
+          </v-btn>
+          <v-btn color="blue darken-1" text v-on:click="submit()">
+            Submit
+          </v-btn>
         </slot>
       </v-card-actions>
     </v-card>
@@ -29,7 +33,7 @@
 
 <script>
 export default {
-  name: 'InputDialog',
+  name: "InputDialog",
   data() {
     return {
       dialog: false,
@@ -38,7 +42,7 @@ export default {
         zIndex: 200,
       },
 
-      value: '',
+      value: "",
 
       resolve: null,
       reject: null,
@@ -49,20 +53,20 @@ export default {
       this.dialog = true;
       this.options = Object.assign(this.options, options);
 
-      if (!('title' in this.options)) {
-        this.options['title'] = 'Enter the value';
+      if (!("title" in this.options)) {
+        this.options["title"] = "Enter the value";
       }
 
-      if (!('label' in this.options)) {
-        this.options['label'] = 'Value';
+      if (!("label" in this.options)) {
+        this.options["label"] = "Value";
       }
 
-      if (!('hint' in this.options)) {
-        this.options['hint'] = '';
+      if (!("hint" in this.options)) {
+        this.options["hint"] = "";
       }
 
-      if (!('type' in this.options)) {
-        this.options['type'] = 'text';
+      if (!("type" in this.options)) {
+        this.options["type"] = "text";
       }
 
       return new Promise((resolve, reject) => {
@@ -72,12 +76,12 @@ export default {
     },
     submit() {
       this.resolve(this.value);
-      this.value = '';
+      this.value = "";
       this.dialog = false;
     },
     cancel() {
       this.resolve(false);
-      this.value = '';
+      this.value = "";
       this.dialog = false;
     },
   },

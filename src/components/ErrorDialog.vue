@@ -34,7 +34,7 @@
 
 <script>
 export default {
-  name: 'ErrorDialog',
+  name: "ErrorDialog",
   props: {
     actionable: {
       type: Boolean,
@@ -42,7 +42,7 @@ export default {
     },
     actionBtnText: {
       type: String,
-      default: 'Retry',
+      default: "Retry",
     },
   },
   data() {
@@ -52,12 +52,12 @@ export default {
       options: {
         width: 400,
         zIndex: 200,
-        errorTitle: 'Avast!',
-        errorMsg: 'An error has occured',
-        defaultBtnText: 'Okay',
+        errorTitle: "Avast!",
+        errorMsg: "An error has occured",
+        defaultBtnText: "Okay",
         actionable: this.actionable,
         actionBtnText: this.actionBtnText,
-        cancelBtnText: 'Cancel',
+        cancelBtnText: "Cancel",
       },
 
       resolve: null,

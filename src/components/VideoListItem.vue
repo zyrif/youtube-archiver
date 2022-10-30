@@ -1,8 +1,5 @@
 <template>
-  <v-card
-    class="ma-2 grey lighten-2 elevation-0"
-    width="100%"
-  >
+  <v-card class="ma-2 grey lighten-2 elevation-0" width="100%">
     <v-card-title>{{ item.title }}</v-card-title>
     <v-card-text>
       <v-row class="mx-1" align="center" justify="start">
@@ -22,22 +19,21 @@
 export default {
   filters: {
     timeFromSeconds: function (value) {
-      if (!value) return '';
+      if (!value) return "";
       let date = new Date(parseInt(value) * 1000);
-      let returnStr = '';
+      let returnStr = "";
       if (date.getUTCHours > 0)
-        returnStr = returnStr + date.getUTCHours() + ':';
+        returnStr = returnStr + date.getUTCHours() + ":";
       returnStr =
         returnStr +
-        date.getMinutes().toString().padStart(2, '0') +
-        ':' +
-        date.getSeconds().toString().padStart(2, '0');
+        date.getMinutes().toString().padStart(2, "0") +
+        ":" +
+        date.getSeconds().toString().padStart(2, "0");
       return returnStr;
     },
   },
-  props: ['hover', 'item'],
+  props: ["hover", "item"],
 };
 </script>
 
-<style>
-</style>
+<style></style>
