@@ -91,8 +91,8 @@
           v-model="playlistUrl.raw"
           color="red"
           label="Youtube Playlist URL"
-          placeholder="Paste the Youtube Playlist/Channel URL you want to track here"
-          hint="Ex. youtube.com/playlist?list=<Playlist ID>"
+          placeholder="https://www.youtube.com/playlist?list="
+          hint="Paste the Youtube Playlist/Channel URL you want to track here"
           v-on:keydown.tab.prevent="doAutocomplete"
         ></v-text-field>
       </v-card-text>
@@ -335,7 +335,10 @@ export default {
       }
     },
     doAutocomplete: function () {
-      if (this.autocompleteText.visible.length > 0) {
+      if (this.playlistUrl.raw.length === 0) {
+        this.playlistUrl.raw = "https://www.youtube.com/playlist?list="
+      }
+      else if (this.autocompleteText.visible.length > 0) {
         this.playlistUrl.raw += this.autocompleteText.visible;
       }
     },
