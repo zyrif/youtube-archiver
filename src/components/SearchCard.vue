@@ -32,77 +32,92 @@
             {{ playlistUrl.listID }}
           </v-chip>
         </v-row>
-        <v-skeleton-loader
-          :loading="isResultLoading"
-          type="heading"
-          class="mt-6"
-        >
-          <v-row class="mx-1" align="center" justify="start">
-            <span class="text-h4">
-              {{ playlistInfo.title }}
-            </span>
-          </v-row>
-        </v-skeleton-loader>
-        <v-skeleton-loader
-          :loading="isResultLoading"
-          type="text"
-          max-width="100px"
-          class="mt-4"
-        >
-          <v-row class="mx-1" align="center" justify="start">
-            <p class="text-subtitle-1">
-              {{ playlistInfo.uploader }}
-            </p>
-          </v-row>
-        </v-skeleton-loader>
-        <v-skeleton-loader
-          :loading="isResultLoading"
-          type="text"
-          max-width="150px"
-          class="mt-3"
-        >
-          <v-row class="mx-1" align="center" justify="start">
-            <span class="text-subtitle-2">
-              {{
-                playlistInfo.numOfVideo > 1
-                  ? `${playlistInfo.numOfVideo} videos available`
-                  : `${playlistInfo.numOfVideo} video available`
-              }}
-            </span>
-            &nbsp; &nbsp;
-            <span class="text-subtitle-2">
-              {{
-                playlistInfo.numOfView > 1
-                  ? `Viewed ${playlistInfo.numOfView} times`
-                  : `Viewed ${playlistInfo.numOfView} time`
-              }}
-            </span>
-          </v-row>
-        </v-skeleton-loader>
-        <v-skeleton-loader
-          :loading="isResultLoading"
-          type="text"
-          max-width="170px"
-          class="mt-1"
-        >
-          <v-row class="mx-1" align="center" justify="start">
-            <p class="text-subtitle-2 mt-2">
-              {{ `Last Updated on ${playlistInfo.lastUpdated}` }}
-            </p>
-          </v-row>
-        </v-skeleton-loader>
-        <v-skeleton-loader
-          :loading="isResultLoading"
-          type="paragraph"
-          max-width="500px"
-          class="mt-4"
-        >
-          <v-row class="mx-1" align="end">
-            <p class="text-body-1">
-              {{ playlistInfo.description }}
-            </p>
-          </v-row>
-        </v-skeleton-loader>
+        <v-row>
+          <v-col>
+            <v-skeleton-loader
+              :loading="isResultLoading"
+              type="heading"
+              class="mt-6"
+            >
+              <v-row class="mx-1" align="center" justify="start">
+                <span class="text-h4">
+                  {{ playlistInfo.title }}
+                </span>
+              </v-row>
+            </v-skeleton-loader>
+            <v-skeleton-loader
+              :loading="isResultLoading"
+              type="text"
+              max-width="100px"
+              class="mt-4"
+            >
+              <v-row class="mx-1" align="center" justify="start">
+                <p class="text-subtitle-1">
+                  {{ playlistInfo.uploader }}
+                </p>
+              </v-row>
+            </v-skeleton-loader>
+            <v-skeleton-loader
+              :loading="isResultLoading"
+              type="text"
+              max-width="150px"
+              class="mt-3"
+            >
+              <v-row class="mx-1" align="center" justify="start">
+                <span class="text-subtitle-2">
+                  {{
+                    playlistInfo.numOfVideo > 1
+                      ? `${playlistInfo.numOfVideo} videos available`
+                      : `${playlistInfo.numOfVideo} video available`
+                  }}
+                </span>
+                &nbsp; &nbsp;
+                <span class="text-subtitle-2">
+                  {{
+                    playlistInfo.numOfView > 1
+                      ? `Viewed ${playlistInfo.numOfView} times`
+                      : `Viewed ${playlistInfo.numOfView} time`
+                  }}
+                </span>
+              </v-row>
+            </v-skeleton-loader>
+            <v-skeleton-loader
+              :loading="isResultLoading"
+              type="text"
+              max-width="170px"
+              class="mt-1"
+            >
+              <v-row class="mx-1" align="center" justify="start">
+                <p class="text-subtitle-2 mt-2">
+                  {{ `Last Updated on ${playlistInfo.lastUpdated}` }}
+                </p>
+              </v-row>
+            </v-skeleton-loader>
+            <v-skeleton-loader
+              :loading="isResultLoading"
+              type="paragraph"
+              max-width="500px"
+              class="mt-4"
+            >
+              <v-row class="mx-1" align="end">
+                <p class="text-body-1">
+                  {{ playlistInfo.description }}
+                </p>
+              </v-row>
+            </v-skeleton-loader>
+          </v-col>
+          <v-col v-if="this.playlistInfo.thumbnailUrl">
+            <v-skeleton-loader :loading="isResultLoading" type="image">
+              <v-img
+                contain
+                max-height="180"
+                max-width="300"
+                class="mt-4"
+                :src="this.playlistInfo.thumbnailUrl"
+              ></v-img>
+            </v-skeleton-loader>
+          </v-col>
+        </v-row>
       </v-card-text>
       <v-card-actions v-if="states.isResultCard">
         <v-row class="ma-1" align="center" justify="end">
@@ -404,6 +419,9 @@ export default {
             this.playlistInfo.numOfView = response.data["views"];
             this.playlistInfo.lastUpdated = response.data["last_updated"];
             this.playlistInfo.uploader = response.data["uploader"];
+            this.playlistInfo.thumbnailUrl = response.data["videos"]
+              ? response.data["videos"][0]["thumbnail_url"]
+              : "";
           }
         })
         .catch((error) => {
