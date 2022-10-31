@@ -11,6 +11,7 @@ const state = () => ({
     ClientId: "160p7sjc02ol4en64lq84tkucr",
   }),
   cognitoUser: null,
+  tokenRefreshInterval: null,
 });
 
 const getters = {
@@ -57,6 +58,13 @@ const mutations = {
   clearCognitoUser(state) {
     state.cognitoUser = null;
   },
+  setTokenRefreshInterval(state, tokenRefreshInterval) {
+    state.tokenRefreshInterval = tokenRefreshInterval;
+  },
+  clearTokenRefreshInterval(state) {
+    clearInterval(state.tokenRefreshInterval);
+    state.tokenRefreshInterval = null;
+  },
 };
 
 const actions = {
@@ -81,6 +89,27 @@ const actions = {
       context
         .dispatch("setOrRefreshToken")
         .then((cognitoUser) => {
+          const tokenRefreshInterval = setInterval(() => {
+            // This should be an invalid state
+            if (!context.state.cognitoUser) {
+              context.commit("clearTokenRefreshInterval");
+              return;
+            }
+
+            // if the session (access token?) is valid, then we don't need to renew
+            const session = context.state.cognitoUser.getSignInUserSession();
+            if (session && session.isValid()) {
+              return;
+            }
+            context.dispatch("setOrRefreshToken").catch((error) => {
+              console.warn(
+                "Error encountered while refreshing login token: ",
+                error
+              );
+              context.commit("clearTokenRefreshInterval");
+            });
+          }, 30 * 60 * 1000);
+          context.commit("setTokenRefreshInterval", tokenRefreshInterval);
           resolve(cognitoUser);
         })
         .catch((error) => {
