@@ -123,6 +123,7 @@
           ><span>{{ autocompleteText.visible }}</span>
         </div>
         <v-text-field
+          ref="input-playlist-url"
           v-model="playlistUrl.raw"
           color="red"
           label="Youtube Playlist URL"
@@ -137,6 +138,7 @@
 </template>
 
 <script>
+import Vue from "vue";
 import ErrorDialog from "./ErrorDialog.vue";
 import { debounce } from "../utils/helpers";
 export default {
@@ -228,6 +230,12 @@ export default {
     },
   },
   mounted: function () {
+    // focus url input element on page load
+    Vue.nextTick(() => {
+      this.$refs["input-playlist-url"].focus();
+    });
+
+    // generate suggestions
     for (const keyword in this.keywords) {
       const hint = this.keywords[keyword];
       Object.assign(this.hintPositions, {
