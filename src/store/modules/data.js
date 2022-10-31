@@ -99,7 +99,7 @@ const actions = {
               if (response.status === 200) {
                 context.commit("setVideos", {
                   id: id,
-                  videos: response.data["video_list"],
+                  videos: response.data["videos"],
                 });
                 setTimeout(() => {
                   context.commit("clearVideos", id);
