@@ -171,6 +171,7 @@ const actions = {
         this._vm.$axios.defaults.headers.common["Authorization"] = result
           .getAccessToken()
           .getJwtToken();
+        context.dispatch("createTokenRefreshJob");
         successCallback(result);
       },
       onFailure: errorCallback,
@@ -225,6 +226,7 @@ const actions = {
   signOut(context, resultCallback) {
     context.state.cognitoUser.signOut((error) => {
       this._vm.$axios.defaults.headers.common["Authorization"] = "";
+      context.commit("clearTokenRefreshInterval");
       resultCallback(error);
     });
   },
