@@ -289,6 +289,9 @@ export default {
       this.playlistUrl.raw = "";
       this.playlistInfo.title = "";
       this.states.isResultCard = false;
+      Vue.nextTick(() => {
+        this.$refs["input-playlist-url"].focus();
+      });
     },
     openLoginDialog: function () {
       this.$store.commit("setLoginDialogVisibility", { value: true });
