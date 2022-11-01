@@ -63,7 +63,7 @@ const mutations = {
   },
   clearTokenRefreshInterval(state) {
     clearInterval(state.tokenRefreshInterval);
-    state.tokenRefreshInterval = null;
+    state.tokenRefreshInterval = 0;
   },
 };
 
@@ -89,27 +89,7 @@ const actions = {
       context
         .dispatch("setOrRefreshToken")
         .then((cognitoUser) => {
-          const tokenRefreshInterval = setInterval(() => {
-            // This should be an invalid state
-            if (!context.state.cognitoUser) {
-              context.commit("clearTokenRefreshInterval");
-              return;
-            }
-
-            // if the session (access token?) is valid, then we don't need to renew
-            const session = context.state.cognitoUser.getSignInUserSession();
-            if (session && session.isValid()) {
-              return;
-            }
-            context.dispatch("setOrRefreshToken").catch((error) => {
-              console.warn(
-                "Error encountered while refreshing login token: ",
-                error
-              );
-              context.commit("clearTokenRefreshInterval");
-            });
-          }, 30 * 60 * 1000);
-          context.commit("setTokenRefreshInterval", tokenRefreshInterval);
+          context.dispatch("createTokenRefreshJob");
           resolve(cognitoUser);
         })
         .catch((error) => {
@@ -150,6 +130,27 @@ const actions = {
         }
       });
     });
+  },
+  createTokenRefreshJob(context, duration = 0.05 * 60 * 1000) {
+    const interval = setInterval(() => {
+      // This should be an invalid state
+      if (!context.state.cognitoUser) {
+        context.commit("clearTokenRefreshInterval");
+        return;
+      }
+
+      // if the session (access token?) is valid, then we don't need to renew
+      const session = context.state.cognitoUser.getSignInUserSession();
+      if (session && session.isValid()) {
+        console.debug("session OK. Returning");
+        return;
+      }
+      context.dispatch("setOrRefreshToken").catch((error) => {
+        console.warn("Error encountered while refreshing login token: ", error);
+        context.commit("clearTokenRefreshInterval");
+      });
+    }, duration);
+    context.commit("setTokenRefreshInterval", interval);
   },
   authenticateUser(context, { authData, successCallback, errorCallback }) {
     let authDetails = new AuthenticationDetails({
