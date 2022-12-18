@@ -1,0 +1,2 @@
+# for an SPA, all requests should be redirected to index.html
+/*      /index.html     200
