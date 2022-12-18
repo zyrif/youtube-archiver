@@ -10,12 +10,16 @@ const routes = [
     path: "/",
     name: "Home",
     component: Landing,
+    meta: {
+      title: "Home - YTTracker",
+    },
   },
   {
     path: "/playlists",
     name: "Playlists",
     component: Dashboard,
     meta: {
+      title: "Playlists - YTTracker",
       breadCrumbs: [
         {
           text: "Home",
@@ -34,6 +38,7 @@ const routes = [
     name: "Videos",
     component: Dashboard,
     meta: {
+      title: "Playlist - YTTracker",
       breadCrumbs: [
         {
           text: "Home",
@@ -67,6 +72,13 @@ const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes,
+});
+
+router.afterEach((to) => {
+  // https://github.com/vuejs/vue-router/issues/914#issuecomment-384477609
+  Vue.nextTick(() => {
+    document.title = to.meta.title || "YTTracker App";
+  });
 });
 
 export default router;
