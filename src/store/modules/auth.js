@@ -147,6 +147,9 @@ const actions = {
       }
       context.dispatch("setOrRefreshToken").catch((error) => {
         console.warn("Error encountered while refreshing login token: ", error);
+        if (error.message === "Network Error") {
+          return;
+        }
         context.commit("clearTokenRefreshInterval");
       });
     }, duration);
