@@ -269,6 +269,7 @@ export default {
         .then((response) => {
           console.log(response);
           if (response.status >= 200 && response.status <= 299) {
+            this.$store.dispatch("fetchPlaylists", { force: true }); // TODO: Show toast if list refresh fails
             this.$router.push("/playlists");
           } else {
             // TODO: show error dialog
