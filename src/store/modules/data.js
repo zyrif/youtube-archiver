@@ -19,25 +19,27 @@ const getters = {
 };
 
 const mutations = {
-  setPlaylists(state, data = { playlists: [] }) {
-    if (!Array.isArray(data.playlists)) {
+  setPlaylists(state, data = { items: [] }) {
+    if (!Array.isArray(data.items)) {
       state.playlists = [];
     } else {
-      state.playlists = data.playlists;
+      state.playlists = data.items;
     }
   },
   clearPlaylists(state) {
     state.playlists = [];
   },
-  setVideos(state, payload) {
-    const id = payload["id"];
-    const videos = payload["videos"];
+  setVideos(
+    state,
+    payload = { items: [], additional_data: { playlist_id: "" } }
+  ) {
+    const id = payload["additional_data"]["playlist_id"];
+    const videos = payload["items"];
 
-    if (!(typeof id === "string" || id instanceof String)) {
-      throw new Error("ID is not a string");
-    }
-    if (!Array.isArray(videos)) {
-      throw new Error("Value is not an array");
+    if (id === "") {
+      throw new Error(
+        "Could not recognize the response format from server. The app is possibly outdated."
+      );
     }
 
     state.videos[id] = videos;
@@ -97,10 +99,7 @@ const actions = {
             .get(`/playlists/${id}`)
             .then((response) => {
               if (response.status === 200) {
-                context.commit("setVideos", {
-                  id: id,
-                  videos: response.data["videos"],
-                });
+                context.commit("setVideos", response.data);
                 setTimeout(() => {
                   context.commit("clearVideos", id);
                 }, 30 * 60 * 1000);
