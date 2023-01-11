@@ -299,7 +299,7 @@ export default {
     },
     checkPlaylistUrl: function (url) {
       let re =
-        /\b(?<protocol>[https]{4,5})?(?::\/\/)?\b(?<subdomain>www|m)?(?:.)?\b(?<domain>youtube\.com)?\b(?:\/playlist\?list=)?\b(?<playlistid>[-a-zA-Z0-9()_]{18,34})\b/;
+        /\b(?<protocol>[https]{4,5})?(?::\/\/)?\b(?<subdomain>www|m)?(?:.)?\b(?<domain>youtube\.com)?\b(?:\/playlist\?list=)?\b(?<playlistid>[a-zA-Z0-9()_-]{18,34})/;
       if (re.test(url)) {
         let matches = re.exec(url);
 
